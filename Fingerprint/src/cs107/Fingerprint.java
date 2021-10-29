@@ -9,6 +9,7 @@ import java.util.List;
  */
 public class Fingerprint {
 
+
   /**
    * The number of pixels to consider in each direction when doing the linear
    * regression to compute the orientation.
@@ -66,7 +67,53 @@ public class Fingerprint {
    * @return An array containing each neighbours' value.
    */
   
-  
+//determine la couleur du voisin (methode utilise par la suite dans getNeighbours
+ public static boolean color(boolean[][] image, int row, int col) { 
+ boolean couleur = true;
+ if( (row >= image.length || row < 0) || (col >= image[0].length || col < 0 ) ) {
+	  couleur = false;
+ } else {
+ couleur = image[row][col];
+ }
+ return couleur;
+ }
+ 
+ 
+ public static boolean[] getNeighbours(boolean[][] image, int row, int col) {
+	  assert (image != null);
+	  if ((row < 0 || row >= image.length) || (col < 0 || col>= image[0].length)) {
+		   System.out.println("Pixel donne n'est pas dans l'image");
+		   return null;
+	  }
+	  
+	   boolean[] neighbours = new boolean[8];
+	  neighbours[0] = color(image, row-1, col);
+	  for(int i = -1; i < 2; ++i) {
+		  neighbours[i+2] = color(image, row+i, col+1);
+		  }
+	  neighbours[4] = color(image, row+1, col+1);
+	  neighbours[5] = color(image, row+1, col-1);
+	  neighbours[6] = color(image, row, col-1);
+	  neighbours[7] = color(image, row-1, col-1);
+	  
+	  return neighbours;
+	  
+	  
+	  
+	   // special case that is not expected (the image is supposed to have been checked
+                             // earlier)
+	  //TODO implement
+ }
+
+ /**
+  * Computes the number of black (<code>true</code>) pixels among the neighbours
+  * of a pixel.
+  *
+  * @param neighbours array containing each pixel value. The array must respect
+  *                   the convention described in
+  *                   {@link #getNeighbours(boolean[][], int, int)}.
+  * @return the number of black neighbours.
+  */
   
   public static int blackNeighbours(boolean[] neighbours) {
 
@@ -182,7 +229,7 @@ public class Fingerprint {
 
    * Internal method used by {@link #thin(boolean[][])}.
 
-   *
+   * 
 
    * @param image array containing each pixel's boolean value.
 
@@ -193,28 +240,18 @@ public class Fingerprint {
    */
 
   public static boolean[][] thinningStep(boolean[][] imageTest2, int step) {
-
-
-
 	 // boucle for pour déterminer si chaque pixel remplit les conditions
 
-	 
+ for (int i = 0; i < imageTest2.length; ++i) {
 
-	 for (int i = 0; i < imageTest2.length; ++i) {
-
-		  for (int j = 0; j < imageTest2[i].length; ++j) {
-
-			  
+	 for (int j = 0; j < imageTest2[i].length; ++j) {	  
 
 		// tests communs aux step 1 et 2 (voir si ça va causer un pb si on les met à l'intérieur de la boucle)
-
-			  
 
 		boolean pixelNoir = imageTest2[i][j];
 
 		boolean[] voisinsNonNul = getNeighbours(imageTest2, i, j);
-
-			
+	
 
 		if ((pixelNoir) && (voisinsNonNul != null) && 
 
@@ -222,19 +259,10 @@ public class Fingerprint {
 
 			(transitions(voisinsNonNul) == 1)) {
 
-			
-
 			// vérifier si on met bien voisinsNonNul à l'intérieur de blackNeighbours 
 
 			// & qu'on doit pas mettre de paramètre dans voisinsNonNul
-
-			
-
-			
-
-			// test step 1
-
-				 
+			// test step 1 
 
 				 if (step == 0) {
 
@@ -246,11 +274,7 @@ public class Fingerprint {
 
 					 }
 
-			
-
 			// test step 2
-
-					 
 
 				 } else if (step == 1) {
 
@@ -264,8 +288,6 @@ public class Fingerprint {
 
 				 }
 
-				 
-
 			// test autre input dans step
 
 			  } else {
@@ -276,7 +298,6 @@ public class Fingerprint {
 
 	  }
 
-	  
 
 		  return imageTest2;
 
@@ -284,7 +305,6 @@ public class Fingerprint {
 
 	 }
 
-	  return null; // pourquoi ??
 
   }
 
@@ -347,16 +367,11 @@ public class Fingerprint {
 		 
 
   	do {
-
   		thinningStep(imageTest2, 0);
 
   		thinningStep(imageTest2, 1);
 
-  		
-
-  		if (!identical(imageTest1, imageTest2)) {
-
-  			
+  		if (!identical(imageTest1, imageTest2)) {	
 
   			 for (int i = 0; i < imageTest2.length; ++i) {
 
@@ -383,107 +398,6 @@ public class Fingerprint {
   }
 
 
-  
-  
-  
-  
-  
-  
-  // determine la couleur du voisin (methode utilise par la suite dans getNeighbours
-  public static boolean color(boolean[][] image, int row, int col) { 
-  boolean couleur = true;
-  if( (row >= image.length || row < 0) || (col >= image[0].length || col < 0 ) ) {
-	  couleur = false;
-  } else {
-  couleur = image[row][col];
-  }
-  return couleur;
-  }
-  
-  
-  
-  
-  
-  public static boolean[] getNeighbours(boolean[][] image, int row, int col) {
-	  boolean[] neighbours = new boolean[8];
-	  neighbours[0] = color(image, row-1, col);
-	  for(int i = -1; i < 2; ++i) {
-		  neighbours[i+2] = color(image, row+i, col+1);
-		  }
-	  neighbours[4] = color(image, row+1, col+1);
-	  neighbours[5] = color(image, row+1, col-1);
-	  neighbours[6] = color(image, row, col-1);
-	  neighbours[7] = color(image, row-1, col-1);
-	  
-	  return neighbours;
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	 // assert (image != null); // special case that is not expected (the image is supposed to have been checked
-                              // earlier)
-	  //TODO implement
-	  // return null; // kefa ???
-  }
-
-  /**
-   * Computes the number of black (<code>true</code>) pixels among the neighbours
-   * of a pixel.
-   *
-   * @param neighbours array containing each pixel value. The array must respect
-   *                   the convention described in
-   *                   {@link #getNeighbours(boolean[][], int, int)}.
-   * @return the number of black neighbours.
-   */
-/*  public static int blackNeighbours(boolean[] neighbours) {
-	  //TODO implement
-	  return 0;
-  }
-  
-  /**
-   * Computes the number of white to black transitions among the neighbours of
-   * pixel.
-   *
-   * @param neighbours array containing each pixel value. The array must respect
-   *                   the convention described in
-   *                   {@link #getNeighbours(boolean[][], int, int)}.
-   * @return the number of white to black transitions.
-   */
- /* public static int transitions(boolean[] neighbours) {
-	  //TODO implement
-	  return 0;
-  }
-
-  /**
-   * Returns <code>true</code> if the images are identical and false otherwise.
-   *
-   * @param image1 array containing each pixel's boolean value.
-   * @param image2 array containing each pixel's boolean value.
-   * @return <code>True</code> if they are identical, <code>false</code>
-   *         otherwise.
-   */
-  /* public static boolean identical(boolean[][] image1, boolean[][] image2) {
-	  //TODO implement
-	  return false;
-  }
-
-  /**
-   * Internal method used by {@link #thin(boolean[][])}.
-   *
-   * @param image array containing each pixel's boolean value.
-   * @param step  the step to apply, Step 0 or Step 1.
-   * @return A new array containing each pixel's value after the step.
-   */
-/*  public static boolean[][] thinningStep(boolean[][] image, int step) {
-	  //TODO implement
-	  return null;
-  }
-  
   /**
    * Compute the skeleton of a boolean image.
    *
