@@ -212,18 +212,11 @@ public class Fingerprint {
 			  if (getNeighbours(image1, i, j) != getNeighbours(image2, i, j)) {
 
 				  identicality = false;
-
 			  } 
-
 		  }
-
 	  }
-
 	  return identicality;
-
   }
-
-
 
   /**
 
@@ -245,8 +238,10 @@ public class Fingerprint {
  for (int i = 0; i < imageTest2.length; ++i) {
 
 	 for (int j = 0; j < imageTest2[i].length; ++j) {	  
-
-		// tests communs aux step 1 et 2 (voir si ça va causer un pb si on les met à l'intérieur de la boucle)
+		
+		assert (step == 1 || step == 2);
+		
+		// tests communs aux step 1 et 2
 
 		boolean pixelNoir = imageTest2[i][j];
 
@@ -259,10 +254,6 @@ public class Fingerprint {
 
 			(transitions(voisinsNonNul) == 1)) {
 
-			// vérifier si on met bien voisinsNonNul à l'intérieur de blackNeighbours 
-
-			// & qu'on doit pas mettre de paramètre dans voisinsNonNul
-			// test step 1 
 
 				 if (step == 0) {
 
@@ -287,28 +278,13 @@ public class Fingerprint {
 					}
 
 				 }
-
-			// test autre input dans step
-
-			  } else {
-
-				  /* si input step est différent de 0 ou 1, message d'erreur ou...? */
-
-			  }
-
-	  }
-
-
-		  return imageTest2;
-
-	 
-
+	  } 
 	 }
-
+  	
 
   }
-
-  
+ 		return imageTest2;
+  }
 
   /**
 
