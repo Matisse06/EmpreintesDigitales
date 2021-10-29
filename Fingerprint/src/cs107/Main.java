@@ -64,10 +64,12 @@ public class Main {
    */
   public static void testGetNeighbours() {
     System.out.print("testGetNeighbours 1: ");
-    boolean[][] image = {{true}};
-    boolean[] neighbours = Fingerprint.getNeighbours(image, 0, 0);
-    boolean[] expected = {false, false, false, false,
-                          false, false, false, false};
+    boolean[][] image = {{true, false, false, true},
+    		{false, false, true, true}, 
+    		{true, true, true, false},
+    		{false, false, false, true}};
+    boolean[] neighbours = Fingerprint.getNeighbours(image, 1, 0);
+    boolean[] expected = {true, false, false, true, true, false, false, false};
     if (arrayEqual(neighbours, expected)) {
       System.out.println("OK");
     } else {

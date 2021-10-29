@@ -398,7 +398,57 @@ public class Fingerprint {
    *         <code>distance</code> and connected to the pixel at
    *         <code>(row, col)</code>.
    */ 
+  public static int rawNeighbour(int i, int row, int col) {
+	  if(i==0 || i==1 || i==7) {
+		  return row-1;
+	  }
+	  if(i==2 || i==6) {
+		  return row;
+	  }
+	  if(i==3 || i==4 || i==5) {
+		  return row+1; 
+	  }
+  }
+  
+  public static int colNeighbour(int i, int row, int col) {
+	  if(i==0 || i==4) {
+		  return col;
+	  }
+	  if(i==1 || i==2 || i==3) {
+		  return col+1;
+	  }
+	  if(i==5 || i==6 || i==7)  {
+		  return col-1;
+	  }
+  }
+  
+  
+  
   public static boolean[][] connectedPixels(boolean[][] image, int row, int col, int distance) {
+	  boolean[][] connected = new boolean[image.length][image[0].length];
+	  boolean analyse[][] = image;
+	  connected[row][col] = true;
+	  for(int i = 0; i < getNeighbours(image, row, col).length; ++i) {
+		  boolean[] neighbours = getNeighbours(image, row, col);
+		  if(neighbours[i] == true) {
+			  connected[rawNeighbour(i, row, col)][colNeighbour(i, row, col)] = true;
+			  
+				  }
+		  }
+	  analyse[row][col] = false;
+	  
+	  
+	  
+			  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
 	  //TODO implement
 	  return null;
   }
