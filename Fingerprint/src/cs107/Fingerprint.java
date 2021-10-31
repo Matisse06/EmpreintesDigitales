@@ -116,19 +116,15 @@ public class Fingerprint {
   */
   
   public static int blackNeighbours(boolean[] neighbours) {
-
+	  
+	  assert (neighbours != null);
+	  
 	  int black = 0;
 
-	  //TODO implement
-
 	  for (int i = 0; i < neighbours.length; ++i) {
-
 		  if (neighbours[i] == true) { 
-
 			  ++black;
-
 		  }
-
 	  }
 
 	  return black;
@@ -156,12 +152,10 @@ public class Fingerprint {
    */
 
   public static int transitions(boolean[] neighbours) {
-
-	  int numberOfTransitions = 0;
-
 	  
-
-	  //TODO implement
+	  assert (neighbours != null);
+	  
+	  int numberOfTransitions = 0;
 
 	  for (int i = 0; i < neighbours.length; ++i) {
 		  int j = i + 1;
@@ -169,14 +163,13 @@ public class Fingerprint {
 		  if (i == 7) {
 			  j = 0;
 		  }
+		  
 		  if (neighbours[i] == false && neighbours[j] == true) {
-
 			  ++ numberOfTransitions;
 
 		  }
 
 	  }
-
 	  return numberOfTransitions;
 
   }
@@ -190,7 +183,6 @@ public class Fingerprint {
    *
 
    * @param image1 array containing each pixel's boolean value.
-
    * @param image2 array containing each pixel's boolean value.
 
    * @return <code>True</code> if they are identical, <code>false</code>
@@ -201,175 +193,123 @@ public class Fingerprint {
 
   public static boolean identical(boolean[][] image1, boolean[][] image2) {
 
-	  //TODO implement
-
-	  boolean identicality = true;
-
+	  assert ((image1 != null) && (image2 != null));
+	  
+	  //checks if two tableaux are identical
+	  if ((image1.length != image2.length) || (image1[0].length != image2[0].length) )
+		  return false;
+	  
 	  for (int i = 0; i < image1.length; ++i) {
-
 		  for (int j = 0; j < image1[i].length; ++j) {
 
-			  if (getNeighbours(image1, i, j) != getNeighbours(image2, i, j)) {
-
-				  identicality = false;
+			  if ((image1[i][j]) != (image2[i][j])) {
+				   return false;
 			  } 
 		  }
 	  }
-	  return identicality;
+	  return true;
   }
 
   /**
 
    * Internal method used by {@link #thin(boolean[][])}.
-
    * 
-
    * @param image array containing each pixel's boolean value.
-
    * @param step  the step to apply, Step 0 or Step 1.
 
    * @return A new array containing each pixel's value after the step.
 
    */
 
-  public static boolean[][] thinningStep(boolean[][] imageTest2, int step) {
-	 // boucle for pour déterminer si chaque pixel remplit les conditions
+public static boolean[][] thinningStep(boolean[][] imageTest2, int step) {
+	
+assert ((step == 1 || step == 2) && (imageTest2 != null));;
 
- for (int i = 0; i < imageTest2.length; ++i) {
-
-	 for (int j = 0; j < imageTest2[i].length; ++j) {	  
-		
-		assert (step == 1 || step == 2);
+// boucle for pour déterminer si chaque pixel remplit les conditions
+	
+for (int i = 0; i < imageTest2.length; ++i) {
+	for (int j = 0; j < imageTest2[i].length; ++j) {	  
 		
 		// tests communs aux step 1 et 2
 
 		boolean pixelNoir = imageTest2[i][j];
-
-		boolean[] voisinsNonNul = getNeighbours(imageTest2, i, j);
 	
+		if ((pixelNoir) && (getNeighbours(imageTest2, i, j) != null) && 
+			(blackNeighbours(getNeighbours(imageTest2, i, j)) >= 2) && (blackNeighbours(getNeighbours(imageTest2, i, j)) <= 6) &&
+			(transitions(getNeighbours(imageTest2, i, j)) == 1)) {
 
-		if ((pixelNoir) && (voisinsNonNul != null) && 
-
-			((blackNeighbours(voisinsNonNul) >= 2) && (blackNeighbours(voisinsNonNul) <= 6)) &&
-
-			(transitions(voisinsNonNul) == 1)) {
-
-
+			// test step 1
+			
 				 if (step == 0) {
-
-					 if (((voisinsNonNul[0] == false) ||(voisinsNonNul[2] == false) || (voisinsNonNul[4] == false)) &&
-
-						((voisinsNonNul[2] == false) ||(voisinsNonNul[4] == false) || (voisinsNonNul[6] == false))) {
-
+					 
+					 if (((getNeighbours(imageTest2, i, j)[0] == false) ||(getNeighbours(imageTest2, i, j)[2] == false) || (getNeighbours(imageTest2, i, j)[4] == false)) &&
+						((getNeighbours(imageTest2, i, j)[2] == false) ||(getNeighbours(imageTest2, i, j)[4] == false) || (getNeighbours(imageTest2, i, j)[6] == false))) {
 						 	imageTest2[i][j] = false;
-
 					 }
+					 
 
 			// test step 2
 
 				 } else if (step == 1) {
 
-					 if (((voisinsNonNul[0] == false) ||(voisinsNonNul[2] == false) || (voisinsNonNul[6] == false)) &&
-
-						((voisinsNonNul[0] == false) ||(voisinsNonNul[4] == false) || (voisinsNonNul[6] == false))) {
-
+					 if (((getNeighbours(imageTest2, i, j)[0] == false) ||(getNeighbours(imageTest2, i, j)[2] == false) || (getNeighbours(imageTest2, i, j)[6] == false)) &&
+						((getNeighbours(imageTest2, i, j)[0] == false) ||(getNeighbours(imageTest2, i, j)[4] == false) || (getNeighbours(imageTest2, i, j)[6] == false))) {
 						 imageTest2[i][j] = false;
-
 					}
-
+					 
+					
 				 }
 	  } 
-	 }
-  	
-
+	}
   }
- 		return imageTest2;
+ 	return imageTest2;
   }
 
   /**
 
    * Compute the skeleton of a boolean image.
 
-   *
-
    * @param image array containing each pixel's boolean value.
-
    * @return array containing the boolean value of each pixel of the image after
-
    *         applying the thinning algorithm.
 
    */
 
   public static boolean[][] thin(boolean[][] image) {
-
-	  //TODO implement
-
 	  
-
+	 assert (image != null);
+	  
 	// création tableau test 1 pour ne pas modifier le tableau initial
+	// création tableau test 2 qui va être modifié (step 1)
+	// création tableau test 3 qui va être modifié (step 2)
 
-		 boolean[][] imageTest1 = new boolean[image.length][image[0].length];
-
+	boolean[][] imageTest1 = new boolean[image.length][image[0].length];
+	boolean[][] imageTest2 = new boolean[image.length][image[0].length];
+	boolean[][] imageTest3 = new boolean[image.length][image[0].length];
 		 
 
-		 for (int i = 0; i < image.length; ++i) {
-
-			 for (int j = 0; j < image[i].length; ++j) {
-
-				 imageTest1[i][j] = image[i][j];
-
-			 }
-
-		 }
-
-	
-
-	// création tableau test 2, qui va être modifié puis comparé avec tableau test 1
-
-		 boolean[][] imageTest2 = new boolean[image.length][image[0].length];
-
-		 
-
-		 for (int i = 0; i < image.length; ++i) {
-
-			 for (int j = 0; j < image[i].length; ++j) {
-
-				 imageTest2[i][j] = image[i][j];
-
-			 }
-
-		 }
-
-		 
+	for (int i = 0; i < image.length; ++i) {
+		for (int j = 0; j < image[i].length; ++j) {
+			imageTest1[i][j] = image[i][j];
+		}
+	}
 
   	do {
-  		thinningStep(imageTest2, 0);
-
-  		thinningStep(imageTest2, 1);
-
-  		if (!identical(imageTest1, imageTest2)) {	
-
-  			 for (int i = 0; i < imageTest2.length; ++i) {
-
-  				 for (int j = 0; j < imageTest2[i].length; ++j) {
-
-  					 imageTest1[i][j] = imageTest2[i][j];
-
-  				 }
-
-  			 }
-
+  		imageTest2 = thinningStep(imageTest1, 0);
+  		imageTest3 = thinningStep(imageTest2, 1);
+  		
+  		
+  		if (!identical(imageTest2, imageTest3)) {	
+  			for (int i = 0; i < imageTest1.length; ++i) {
+				 for (int j = 0; j < imageTest1[i].length; ++j) {
+					 imageTest1[i][j] = imageTest3[i][j];
+				 }
+			 }
   		}
-
   		
 
-	  } while (!identical(imageTest1, imageTest2));
-
-  	
-
-  	return imageTest2;
-
-	  //return null;
+	  } while (!identical(imageTest2, imageTest3));
+  	return imageTest3;
 
   }
 
@@ -412,10 +352,52 @@ public class Fingerprint {
    * @param col             the col of the minutia.
    * @return the slope.
    */
-  public static double computeSlope(boolean[][] connectedPixels, int row, int col) {
-	  //TODO implement
-	  return 0;
+  public static double computeSlope(boolean[][] connectedPixels, int rowM, int colM) {
+	 
+	 assert (connectedPixels != null);
+	 
+	 // initialisation des variables
+	  
+	 double slope = 0.;
+	  
+	  double somme_x2 = 0;
+	  double somme_y2 = 0;
+	  double somme_xy = 0;
+	  
+	 
+	  
+	  for (int row = 0; row < connectedPixels.length; ++row) {
+		  for (int col = 0; col < connectedPixels[row].length; ++col) {
+			  
+			  // x et y exprimés en fonction de l'origine du repère, centré sur la minutie
+			  int x = col - colM;
+			  int y = rowM - row;
+			  
+			  if (connectedPixels[row][col]) {
+				  somme_x2 += x * x;
+				  somme_y2 += y * y;
+				  somme_xy += x * y;
+			  }
+		  }
+	  }
+	  
+	  if (somme_x2 == 0) {
+		  slope = Double.POSITIVE_INFINITY;
+		  return slope;
+	  }
+	  
+	  else {
+		  
+	  if (somme_x2 >= somme_y2) {
+		  slope = somme_xy / somme_x2;
+	  } else {
+		  slope = somme_y2 / somme_xy;
+	  }
+	  
+	  return slope;
+	  }
   }
+  
 
   /**
    * Computes the orientation of a minutia in radians.
@@ -428,9 +410,51 @@ public class Fingerprint {
    *                        {@link #computeSlope(boolean[][], int, int)}.
    * @return the orientation of the minutia in radians.
    */
-  public static double computeAngle(boolean[][] connectedPixels, int row, int col, double slope) {
-	  //TODO implement
-	  return 0;
+  public static double computeAngle(boolean[][] connectedPixels, int rowM, int colM, double slope) {
+	  
+	  // calcul de l'angle formé par le vecteur direction
+	  double angle = Math.atan(slope);
+	  
+	  
+	  // variable qui compte le nombre de pixels au dessus et en dessous
+	  int pixelUp = 0;	
+	  int pixelDown = 0;
+	  
+	  // boucle qui verifie que les conditions soient respectées
+	  
+	  for (int row = 0; row < connectedPixels.length; ++row) {
+		  for (int col = 0; col < connectedPixels[row].length; ++col) {
+			  
+			// x et y exprimés en fonction de l'origine du repère, centré sur la minutie  
+			int x = col - colM;
+			int y = rowM - row;
+			
+			boolean pixelNoir = connectedPixels[row][col];
+			  
+			  if (pixelNoir && (y >= ((-1/slope) * x))) {
+				  pixelUp += 1;
+			  } else if (pixelNoir && (y < ((-1/slope) * x))) {
+				  pixelDown += 1;
+			  }
+		  }
+	  }
+	  
+	  // conditions qui déterminent l'ajout potentiel de PI à l'angle calculé au début
+	  if ((slope == Double.POSITIVE_INFINITY && (pixelUp > pixelDown))) {
+		  // on est draccord, le "au dessus de la minutie" c'est bien de la perpendiculaire ???
+		  angle  = Math.PI / 2;
+	  } 
+	  
+	  else if ((slope == Double.POSITIVE_INFINITY && (pixelUp < pixelDown))) {
+		  angle  =  - Math.PI / 2; 
+	  } 
+	  
+	  else if ((angle > 0 && (pixelDown > pixelUp)) || (angle < 0 && (pixelDown < pixelUp))) {
+		// vérifier si c'est strictement sup / inf ou pas !!!!! si non = what if == ????
+		  angle += Math.PI;
+	  }
+
+	  return angle;
   }
 
   /**

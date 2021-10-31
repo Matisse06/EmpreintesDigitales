@@ -19,14 +19,14 @@ public class Main {
     //---------------------------
 	System.out.println("Uncomment the function calls in Main.main to test your implementation.");
 	System.out.println("The provided tests are not complete. You have to write your own tests.");
-    testGetNeighbours();
+    //testGetNeighbours();
     //testConnectedPixels1();
     //testConnectedPixels2();
     //testConnectedPixels3();
     //testOrientation();
     //testApplyRotation();
     //testApplyTranslation();
-    //testThin();
+    testThin();
     //testWithSkeleton();
     
     //testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
@@ -54,7 +54,7 @@ public class Main {
 
     //compare 1_1 with all images of finger 3 to 16
     //for (int f = 3; f <= 16; f++) {
-    //    testCompareAllFingerprints("1_1", f, false);
+    //testCompareAllFingerprints("1_1", f, false);
     //}	
   }
 
@@ -64,10 +64,13 @@ public class Main {
    */
   public static void testGetNeighbours() {
     System.out.print("testGetNeighbours 1: ");
-    boolean[][] image = {{true}};
-    boolean[] neighbours = Fingerprint.getNeighbours(image, 0, 0);
-    boolean[] expected = {false, false, false, false,
-                          false, false, false, false};
+    boolean[][] image = {{true, false, false, true},
+    					 {false, false, true, true},
+    					 {true, true, true, false},
+    					 {false, false, false, true}};
+    boolean[] neighbours = Fingerprint.getNeighbours(image, 1, 0);
+    boolean[] expected = {true, false, false, true,
+                          true, false, false, false};
     if (arrayEqual(neighbours, expected)) {
       System.out.println("OK");
     } else {
