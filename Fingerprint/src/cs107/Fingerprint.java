@@ -91,7 +91,7 @@ public class Fingerprint {
 	  for(int i = -1; i < 2; ++i) {
 		  neighbours[i+2] = color(image, row+i, col+1);
 		  }
-	  neighbours[4] = color(image, row+1, col+1);
+	  neighbours[4] = color(image, row+1, col);
 	  neighbours[5] = color(image, row+1, col-1);
 	  neighbours[6] = color(image, row, col-1);
 	  neighbours[7] = color(image, row-1, col-1);
@@ -437,15 +437,24 @@ public class Fingerprint {
 	  while(finit == false) {
 		  finit = true;
 		  for(int i = 0; i < image.length; i++) {
-			  for(int j = 0; i < image[0].length; ++j) {
+			 System.out.println("Pix ligne" +i);
+			  for(int j = 0; j < image[0].length; ++j) {
+				  System.out.println("Pix col"+j);
 				  if(image[i][j] == false) {
 					  //pixel blanc, go pixel suivant
+					  System.out.println("pixel blanc");
 			  } else {
-				  if((i < row-distance || i > row+distance) || (j < col+distance || j > col-distance)) {
+				  System.out.println("  ");
+				  System.out.println("  ");
+				  Main.printArray(connected);
+				  System.out.println("  ");
+				  if((i < row-distance || i > row+distance) || (j < col-distance || j > col+distance)) {
 					  // trop loin de la minutiae, go suivant 
+					  System.out.println("pixel out of bounds");
 				  } else {
 					  if(connected[i][j] == true) {     
 						  // si pixel noir deja dans tableau connected, go pixel suivant
+						  System.out.println("pixel noir deja dans tab");
 					  } else {
 					  
 					  
@@ -454,9 +463,12 @@ public class Fingerprint {
 						  if(neighbours[g] == true) {
 							  int rowPixNoir = rowNeighbour(g, i, j);                // determiner position pixel noir voisin
 							  int colPixNoir = colNeighbour(g, i, j);
+							  //System.out.println("coordonnees pixel noir connecte" +rowPixNoir+ " " +colPixNoir);
 							  if(connected[rowPixNoir][colPixNoir] == true) {        // si le pixel voisin est lie a minutiae good!
 								  connected[i][j] = true;
-								  finit = false;            // on a trouve un pixel lie, recommencer processus
+								  System.out.println("add lie dans tab");
+								  finit = false;
+								  // on a trouve un pixel lie, recommencer processus
 							  }
 						  }
 					  }
@@ -472,7 +484,7 @@ public class Fingerprint {
 			  
 		
 	  //TODO implement
-	  return null;
+	  return connected;
   }
 
   /**
