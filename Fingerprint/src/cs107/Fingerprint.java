@@ -398,7 +398,9 @@ public class Fingerprint {
    *         <code>distance</code> and connected to the pixel at
    *         <code>(row, col)</code>.
    */ 
-  public static int rawNeighbour(int i, int row, int col) {
+  
+  
+  public static int rowNeighbour(int i, int row, int col) { // determine la ligne du pixel voisin de getNeighbours
 	  if(i==0 || i==1 || i==7) {
 		  return row-1;
 	  }
@@ -408,9 +410,10 @@ public class Fingerprint {
 	  if(i==3 || i==4 || i==5) {
 		  return row+1; 
 	  }
+	  return -1;
   }
   
-  public static int colNeighbour(int i, int row, int col) {
+  public static int colNeighbour(int i, int row, int col) { // determine la colonne du pixel voisin de getNeighbours
 	  if(i==0 || i==4) {
 		  return col;
 	  }
@@ -420,35 +423,54 @@ public class Fingerprint {
 	  if(i==5 || i==6 || i==7)  {
 		  return col-1;
 	  }
+	  return -1;
   }
   
   
   
   public static boolean[][] connectedPixels(boolean[][] image, int row, int col, int distance) {
 	  boolean[][] connected = new boolean[image.length][image[0].length];
-	  boolean analyse[][] = image;
 	  connected[row][col] = true;
-	  for(int i = 0; i < getNeighbours(image, row, col).length; ++i) {
-		  boolean[] neighbours = getNeighbours(image, row, col);
-		  if(neighbours[i] == true) {
-			  connected[rawNeighbour(i, row, col)][colNeighbour(i, row, col)] = true;
-			  
+	 
+	  // idee 1 :
+	  boolean finit = false;
+	  while(finit == false) {
+		  finit = true;
+		  for(int i = 0; i < image.length; i++) {
+			  for(int j = 0; i < image[0].length; ++j) {
+				  if(image[i][j] == false) {
+					  //pixel blanc, go pixel suivant
+			  } else {
+				  if((i < row-distance || i > row+distance) || (j < col+distance || j > col-distance)) {
+					  // trop loin de la minutiae, go suivant 
+				  } else {
+					  if(connected[i][j] == true) {     
+						  // si pixel noir deja dans tableau connected, go pixel suivant
+					  } else {
+					  
+					  
+					  boolean[] neighbours = getNeighbours(image, i, j);
+					  for(int g = 0; g < neighbours.length; ++g) {
+						  if(neighbours[g] == true) {
+							  int rowPixNoir = rowNeighbour(g, i, j);                // determiner position pixel noir voisin
+							  int colPixNoir = colNeighbour(g, i, j);
+							  if(connected[rowPixNoir][colPixNoir] == true) {        // si le pixel voisin est lie a minutiae good!
+								  connected[i][j] = true;
+								  finit = false;            // on a trouve un pixel lie, recommencer processus
+							  }
+						  }
+					  }
+					  }  
 				  }
+			  }
+
+			  }
 		  }
-	  analyse[row][col] = false;
-	  
-	  
+		  
+	  }
 	  
 			  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
+		
 	  //TODO implement
 	  return null;
   }
