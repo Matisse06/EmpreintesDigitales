@@ -491,7 +491,7 @@ for (int i = 0; i < imageTest4.length; ++i) {
    * @return The orientation in degrees.
    */
   public static int computeOrientation(boolean[][] image, int row, int col, int distance) {
-	  
+	  //
 	  // angle en radian
 	  //double angleR = computeAngle(computeSlope(connectedPixels(image, row, col, distance)));
 	  //angleR = Math.toDegrees(angleR);
