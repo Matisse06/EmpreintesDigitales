@@ -221,33 +221,25 @@ public class Fingerprint {
 
    */
 
-public static boolean[][] thinningStep(boolean[][] imageTest2, int step) {
+public static boolean[][] thinningStep(boolean[][] imageTest, int step) {
 	
-assert ((step == 1 || step == 2) && (imageTest2 != null));
-
-boolean[][] imageTest4 = new boolean[imageTest2.length][imageTest2[0].length];		 
-
-for (int i = 0; i < imageTest4.length; ++i) {
-	for (int j = 0; j < imageTest4[i].length; ++j) {
-		imageTest4[i][j] = imageTest4[i][j];
-	}
-}
+assert ((step == 1 || step == 2) && (imageTest != null));
 
 // boucle for pour déterminer si chaque pixel remplit les conditions
 	
-for (int i = 0; i < imageTest4.length; ++i) {
-	for (int j = 0; j < imageTest4[i].length; ++j) {	  
+for (int i = 0; i < imageTest.length; ++i) {
+	for (int j = 0; j < imageTest[i].length; ++j) {	  
 		
 		// tests communs aux step 1 et 2
 
-		boolean pixelNoir = imageTest4[i][j];
-		boolean[] neighbours = getNeighbours(imageTest4, i, j);
+		boolean pixelNoir = imageTest[i][j];
+		boolean[] neighbours = getNeighbours(imageTest, i, j);
 		
 		
 		if (pixelNoir) {
 		System.out.println("case " + i + ", " + j);
 		System.out.println("blackN : " + blackNeighbours(neighbours));
-		System.out.println("nb transitions : " + transitions(getNeighbours(imageTest4, i, j))); }
+		System.out.println("nb transitions : " + transitions(getNeighbours(imageTest, i, j))); }
 		
 	
 		if ((pixelNoir) && (neighbours != null) && 
@@ -258,9 +250,9 @@ for (int i = 0; i < imageTest4.length; ++i) {
 			
 				 if (step == 0) {
 					
-					 if (((getNeighbours(imageTest4, i, j)[0] == false) ||(getNeighbours(imageTest4, i, j)[2] == false) || (getNeighbours(imageTest4, i, j)[4] == false)) &&
-						((getNeighbours(imageTest4, i, j)[2] == false) ||(getNeighbours(imageTest4, i, j)[4] == false) || (getNeighbours(imageTest4, i, j)[6] == false))) {
-						 	imageTest4[i][j] = false;
+					 if (((getNeighbours(imageTest, i, j)[0] == false) ||(getNeighbours(imageTest, i, j)[2] == false) || (getNeighbours(imageTest, i, j)[4] == false)) &&
+						((getNeighbours(imageTest, i, j)[2] == false) ||(getNeighbours(imageTest, i, j)[4] == false) || (getNeighbours(imageTest, i, j)[6] == false))) {
+						 	imageTest[i][j] = false;
 						 	System.out.println("deleted !");
 					 }
 					 
@@ -270,9 +262,9 @@ for (int i = 0; i < imageTest4.length; ++i) {
 				 } else if (step == 1) {
 		
 
-					 if (((getNeighbours(imageTest4, i, j)[0] == false) ||(getNeighbours(imageTest4, i, j)[2] == false) || (getNeighbours(imageTest4, i, j)[6] == false)) &&
-						((getNeighbours(imageTest4, i, j)[0] == false) ||(getNeighbours(imageTest4, i, j)[4] == false) || (getNeighbours(imageTest4, i, j)[6] == false))) {
-						 imageTest4[i][j] = false;
+					 if (((getNeighbours(imageTest, i, j)[0] == false) ||(getNeighbours(imageTest, i, j)[2] == false) || (getNeighbours(imageTest, i, j)[6] == false)) &&
+						((getNeighbours(imageTest, i, j)[0] == false) ||(getNeighbours(imageTest, i, j)[4] == false) || (getNeighbours(imageTest, i, j)[6] == false))) {
+						 imageTest[i][j] = false;
 						 System.out.println("deleted !");
 					}
 					 
@@ -283,7 +275,7 @@ for (int i = 0; i < imageTest4.length; ++i) {
 	  } 
 	}
   }
- 	return imageTest4;
+ 	return imageTest;
   }
 
   /**
@@ -318,7 +310,7 @@ for (int i = 0; i < imageTest4.length; ++i) {
   		boolean[][] imageTest2 = thinningStep(imageTest1, 0);
   		boolean[][] imageTest3 = thinningStep(imageTest2, 1);
   		
-  		if (!identical(imageTest1, imageTest3)) {	
+  		if (!identical(imageTest2, imageTest3)) {	
   			for (int i = 0; i < imageTest1.length; ++i) {
 				 for (int j = 0; j < imageTest1[i].length; ++j) {
 					 imageTest1[i][j] = imageTest3[i][j];
