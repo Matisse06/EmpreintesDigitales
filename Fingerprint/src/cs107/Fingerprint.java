@@ -224,7 +224,7 @@ public class Fingerprint {
 
    * 
 
-   * @param image array containing each pixel's boolean value.
+   * @param //image array containing each pixel's boolean value.
 
    * @param step  the step to apply, Step 0 or Step 1.
 
@@ -377,7 +377,7 @@ public class Fingerprint {
   /**
    * Compute the skeleton of a boolean image.
    *
-   * @param image array containing each pixel's boolean value.
+   * @param //image array containing each pixel's boolean value.
    * @return array containing the boolean value of each pixel of the image after
    *         applying the thinning algorithm.
    */

@@ -22,7 +22,7 @@ public class Main {
     //testGetNeighbours();
     //testConnectedPixels1();
     //testConnectedPixels2();
-    testConnectedPixels3();
+    //testConnectedPixels3();
     //testOrientation();
     //testApplyRotation();
     //testApplyTranslation();
