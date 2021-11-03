@@ -507,6 +507,7 @@ for (int i = 0; i < imageTest4.length; ++i) {
 	  //return angleD;
 	  // comment savoir les coordonnées de la minutie ??
 
+	  //
 	  return 0;
   }
 
