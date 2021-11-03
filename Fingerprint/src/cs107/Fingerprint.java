@@ -91,7 +91,7 @@ public class Fingerprint {
 	  for(int i = -1; i < 2; ++i) {
 		  neighbours[i+2] = color(image, row+i, col+1);
 		  }
-	  neighbours[4] = color(image, row+1, col+1);
+	  neighbours[4] = color(image, row+1, col);
 	  neighbours[5] = color(image, row+1, col-1);
 	  neighbours[6] = color(image, row, col-1);
 	  neighbours[7] = color(image, row-1, col-1);
@@ -223,46 +223,67 @@ public class Fingerprint {
 
 public static boolean[][] thinningStep(boolean[][] imageTest2, int step) {
 	
-assert ((step == 1 || step == 2) && (imageTest2 != null));;
+assert ((step == 1 || step == 2) && (imageTest2 != null));
+
+boolean[][] imageTest4 = new boolean[imageTest2.length][imageTest2[0].length];		 
+
+for (int i = 0; i < imageTest4.length; ++i) {
+	for (int j = 0; j < imageTest4[i].length; ++j) {
+		imageTest4[i][j] = imageTest4[i][j];
+	}
+}
 
 // boucle for pour déterminer si chaque pixel remplit les conditions
 	
-for (int i = 0; i < imageTest2.length; ++i) {
-	for (int j = 0; j < imageTest2[i].length; ++j) {	  
+for (int i = 0; i < imageTest4.length; ++i) {
+	for (int j = 0; j < imageTest4[i].length; ++j) {	  
 		
 		// tests communs aux step 1 et 2
 
-		boolean pixelNoir = imageTest2[i][j];
+		boolean pixelNoir = imageTest4[i][j];
+		boolean[] neighbours = getNeighbours(imageTest4, i, j);
+		
+		
+		if (pixelNoir) {
+		System.out.println("case " + i + ", " + j);
+		System.out.println("blackN : " + blackNeighbours(neighbours));
+		System.out.println("nb transitions : " + transitions(getNeighbours(imageTest4, i, j))); }
+		
 	
-		if ((pixelNoir) && (getNeighbours(imageTest2, i, j) != null) && 
-			(blackNeighbours(getNeighbours(imageTest2, i, j)) >= 2) && (blackNeighbours(getNeighbours(imageTest2, i, j)) <= 6) &&
-			(transitions(getNeighbours(imageTest2, i, j)) == 1)) {
+		if ((pixelNoir) && (neighbours != null) && 
+			(blackNeighbours(neighbours)) >= 2 && (blackNeighbours(neighbours) <= 6) &&
+			(transitions(neighbours) == 1)) {
 
 			// test step 1
 			
 				 if (step == 0) {
-					 
-					 if (((getNeighbours(imageTest2, i, j)[0] == false) ||(getNeighbours(imageTest2, i, j)[2] == false) || (getNeighbours(imageTest2, i, j)[4] == false)) &&
-						((getNeighbours(imageTest2, i, j)[2] == false) ||(getNeighbours(imageTest2, i, j)[4] == false) || (getNeighbours(imageTest2, i, j)[6] == false))) {
-						 	imageTest2[i][j] = false;
+					
+					 if (((getNeighbours(imageTest4, i, j)[0] == false) ||(getNeighbours(imageTest4, i, j)[2] == false) || (getNeighbours(imageTest4, i, j)[4] == false)) &&
+						((getNeighbours(imageTest4, i, j)[2] == false) ||(getNeighbours(imageTest4, i, j)[4] == false) || (getNeighbours(imageTest4, i, j)[6] == false))) {
+						 	imageTest4[i][j] = false;
+						 	System.out.println("deleted !");
 					 }
 					 
 
 			// test step 2
 
 				 } else if (step == 1) {
+		
 
-					 if (((getNeighbours(imageTest2, i, j)[0] == false) ||(getNeighbours(imageTest2, i, j)[2] == false) || (getNeighbours(imageTest2, i, j)[6] == false)) &&
-						((getNeighbours(imageTest2, i, j)[0] == false) ||(getNeighbours(imageTest2, i, j)[4] == false) || (getNeighbours(imageTest2, i, j)[6] == false))) {
-						 imageTest2[i][j] = false;
+					 if (((getNeighbours(imageTest4, i, j)[0] == false) ||(getNeighbours(imageTest4, i, j)[2] == false) || (getNeighbours(imageTest4, i, j)[6] == false)) &&
+						((getNeighbours(imageTest4, i, j)[0] == false) ||(getNeighbours(imageTest4, i, j)[4] == false) || (getNeighbours(imageTest4, i, j)[6] == false))) {
+						 imageTest4[i][j] = false;
+						 System.out.println("deleted !");
 					}
 					 
 					
 				 }
+				 
+				 System.out.println();
 	  } 
 	}
   }
- 	return imageTest2;
+ 	return imageTest4;
   }
 
   /**
@@ -283,10 +304,7 @@ for (int i = 0; i < imageTest2.length; ++i) {
 	// création tableau test 2 qui va être modifié (step 1)
 	// création tableau test 3 qui va être modifié (step 2)
 
-	boolean[][] imageTest1 = new boolean[image.length][image[0].length];
-	boolean[][] imageTest2 = new boolean[image.length][image[0].length];
-	boolean[][] imageTest3 = new boolean[image.length][image[0].length];
-		 
+	boolean[][] imageTest1 = new boolean[image.length][image[0].length];		 
 
 	for (int i = 0; i < image.length; ++i) {
 		for (int j = 0; j < image[i].length; ++j) {
@@ -294,12 +312,13 @@ for (int i = 0; i < imageTest2.length; ++i) {
 		}
 	}
 
+	boolean change;
+	
   	do {
-  		imageTest2 = thinningStep(imageTest1, 0);
-  		imageTest3 = thinningStep(imageTest2, 1);
+  		boolean[][] imageTest2 = thinningStep(imageTest1, 0);
+  		boolean[][] imageTest3 = thinningStep(imageTest2, 1);
   		
-  		
-  		if (!identical(imageTest2, imageTest3)) {	
+  		if (!identical(imageTest1, imageTest3)) {	
   			for (int i = 0; i < imageTest1.length; ++i) {
 				 for (int j = 0; j < imageTest1[i].length; ++j) {
 					 imageTest1[i][j] = imageTest3[i][j];
@@ -307,9 +326,12 @@ for (int i = 0; i < imageTest2.length; ++i) {
 			 }
   		}
   		
+  		change = !identical(imageTest1, imageTest3);
+  		
 
-	  } while (!identical(imageTest2, imageTest3));
-  	return imageTest3;
+	  } while (change);
+  	
+  	return imageTest1;
 
   }
 
@@ -441,7 +463,7 @@ for (int i = 0; i < imageTest2.length; ++i) {
 	  
 	  // conditions qui déterminent l'ajout potentiel de PI à l'angle calculé au début
 	  if ((slope == Double.POSITIVE_INFINITY && (pixelUp > pixelDown))) {
-		  // on est draccord, le "au dessus de la minutie" c'est bien de la perpendiculaire ???
+		  // on est d'accord, le "au dessus de la minutie" c'est bien de la perpendiculaire ???
 		  angle  = Math.PI / 2;
 	  } 
 	  
@@ -469,7 +491,22 @@ for (int i = 0; i < imageTest2.length; ++i) {
    * @return The orientation in degrees.
    */
   public static int computeOrientation(boolean[][] image, int row, int col, int distance) {
-	  //TODO implement
+	  
+	  // angle en radian
+	  //double angleR = computeAngle(computeSlope(connectedPixels(image, row, col, distance)));
+	  //angleR = Math.toDegrees(angleR);
+	  
+	  // angle en dégré (rounded)
+	  //int angleD = Math.round(angleD);
+	  // initialisé à double mais comment le rendre int ?
+	  
+	 // if (angleD < 0) {
+	 //	  angleD += 360;
+	  //}
+	  
+	  //return angleD;
+	  // comment savoir les coordonnées de la minutie ??
+
 	  return 0;
   }
 
@@ -561,7 +598,7 @@ for (int i = 0; i < imageTest2.length; ++i) {
    * @return the number of overlapping minutiae.
    */
   public static int matchingMinutiaeCount(List<int[]> minutiae1, List<int[]> minutiae2, int maxDistance,
-      int maxOrientation) {
+										  int maxOrientation) {
 	  //TODO implement
 	  return 0;
   }

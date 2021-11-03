@@ -26,7 +26,7 @@ public class Main {
     //testOrientation();
     //testApplyRotation();
     //testApplyTranslation();
-    testThin();
+    //testThin();
     //testWithSkeleton();
     
     //testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
@@ -68,9 +68,9 @@ public class Main {
     					 {false, false, true, true},
     					 {true, true, true, false},
     					 {false, false, false, true}};
-    boolean[] neighbours = Fingerprint.getNeighbours(image, 1, 0);
-    boolean[] expected = {true, false, false, true,
-                          true, false, false, false};
+    boolean[] neighbours = Fingerprint.getNeighbours(image, 0, 3);
+    boolean[] expected = {false, false, false, false,
+                          true, true, false, false};
     if (arrayEqual(neighbours, expected)) {
       System.out.println("OK");
     } else {
@@ -246,7 +246,7 @@ public class Main {
    * it.
    */
   public static void testThin() {
-	    boolean[][] image1 = Helper.readBinary("resources/test_inputs/1_1_small.png");
+	    boolean[][] image1 =  Helper.readBinary("resources/test_inputs/1_1_small.png");
 	    boolean[][] skeleton1 = Fingerprint.thin(image1);
 	    Helper.writeBinary("skeleton_1_1_small.png", skeleton1);
   }
