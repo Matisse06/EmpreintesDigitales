@@ -180,7 +180,6 @@ public class Fingerprint {
 
    * Returns <code>true</code> if the images are identical and false otherwise.
 
-
    *
 
    * @param image1 array containing each pixel's boolean value.
