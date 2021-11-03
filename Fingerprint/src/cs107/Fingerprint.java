@@ -529,6 +529,7 @@ for (int i = 0; i < imageTest4.length; ++i) {
    *
    *
    *
+   *
    * Applies the specified rotation to the minutia.
    *
    * @param minutia   the original minutia.
