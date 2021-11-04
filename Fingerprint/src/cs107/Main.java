@@ -246,7 +246,7 @@ public class Main {
    * it.
    */
   public static void testThin() {
-	    boolean[][] image1 =  Helper.readBinary("resources/test_inputs/1_1_small.png");
+	    boolean[][] image1 =  Helper.readBinary("resources/fingerprints/1_1.png");
 	    boolean[][] skeleton1 = Fingerprint.thin(image1);
 	    Helper.writeBinary("my_skeleton.png", skeleton1);
   }
