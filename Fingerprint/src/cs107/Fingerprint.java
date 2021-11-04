@@ -325,7 +325,6 @@ public class Fingerprint {
 					}
 				}
 			}
-
 			//
 
 			change = !identical(imageTest2, imageTest3);
