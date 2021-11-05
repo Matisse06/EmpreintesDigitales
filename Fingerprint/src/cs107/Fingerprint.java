@@ -649,8 +649,14 @@ public class Fingerprint {
 		 * @return the translated minutia.
 		 */
 		public static int[] applyTranslation ( int[] minutia, int rowTranslation, int colTranslation){
-			//TODO implement
-			return null;
+			// nouvelles coordonnées de la minutie après avoir apppliqué la translation
+			int newRow = minutia[0] - rowTranslation;
+			int newCol = minutia[1] - colTranslation;
+			int newOrientation = minutia[2];
+
+			int[] paramètres = {newRow, newCol, newOrientation};
+
+			return paramètres;
 		}
 
 		/**
@@ -667,8 +673,13 @@ public class Fingerprint {
 		 */
 		public static int[] applyTransformation ( int[] minutia, int centerRow, int centerCol, int rowTranslation,
 		int colTranslation, int rotation){
-			//TODO implement
-			return null;
+
+			// crée un nouveau tableau pour Rotation (w/ tableau initial)
+			// crée un nouveau tableau pour Translation (w/ tableau de Rotation)
+			int[] minutia2 = applyRotation(minutia, centerRow, centerCol, rotation);
+			int[] minutia3 = applyTranslation (minutia2, rowTranslation, colTranslation);
+
+			return minutia3;
 		}
 
 		/**
@@ -684,10 +695,17 @@ public class Fingerprint {
 		 * @return the list of transformed minutiae.
 		 */
 		public static List<int[]> applyTransformation (List < int[]>minutiae,int centerRow, int centerCol,
-		int rowTranslation,
-		int colTranslation, int rotation){
-			//TODO implement
-			return null;
+		int rowTranslation, int colTranslation, int rotation){
+
+			//applique la transformation à une liste entière
+			ArrayList <int[]> ListeMinutia = new ArrayList<int[]>();
+
+			for(int[] i : minutiae) {
+				ListeMinutia.add(applyTransformation(i, centerRow, centerCol, rowTranslation,
+				colTranslation, rotation));
+			}
+
+			return ListeMinutia;
 		}
 		/**
 		 * Counts the number of overlapping minutiae.
