@@ -624,7 +624,7 @@ public class Fingerprint {
 			int x = minutia[1] - centerCol;
 			int y = centerRow - minutia[0];
 			double newX = x * Math.cos(rotation*(Math.PI/180)) - y * Math.sin(rotation*(Math.PI/180));
-			double newY = x * Math.sin(rotation) - y * Math.sin(rotation);
+			double newY = x * Math.sin(rotation*(Math.PI/180)) + y * Math.cos(rotation*(Math.PI/180));
 			double newRow = centerRow - newY;
 			double newCol = newX + centerCol;
 
@@ -675,8 +675,9 @@ public class Fingerprint {
 		int colTranslation, int rotation){
 
 			// crée un nouveau tableau pour Rotation (w/ tableau initial)
-			// crée un nouveau tableau pour Translation (w/ tableau de Rotation)
 			int[] minutia2 = applyRotation(minutia, centerRow, centerCol, rotation);
+
+			// crée un nouveau tableau pour Translation (w/ tableau de Rotation)
 			int[] minutia3 = applyTranslation (minutia2, rowTranslation, colTranslation);
 
 			return minutia3;
