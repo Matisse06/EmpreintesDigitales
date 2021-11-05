@@ -214,7 +214,7 @@ public class Fingerprint {
 
 	 * Internal method used by {@link #thin(boolean[][])}.
 	 *
-	 * @param image array containing each pixel's boolean value.
+	 * @param //image array containing each pixel's boolean value.
 	 * @param step  the step to apply, Step 0 or Step 1.
 
 	 * @return A new array containing each pixel's value after the step.
@@ -340,7 +340,7 @@ public class Fingerprint {
 	/**
 	 * Compute the skeleton of a boolean image.
 	 *
-	 * @param image array containing each pixel's boolean value.
+	 * @param //image array containing each pixel's boolean value.
 	 * @return array containing the boolean value of each pixel of the image after
 	 *         applying the thinning algorithm.
 	 */
@@ -361,268 +361,357 @@ public class Fingerprint {
    *         <code>distance</code> and connected to the pixel at
    *         <code>(row, col)</code>.
    */
+
+	public static int rowNeighbour(int i, int row, int col) { // determine la ligne du pixel voisin de getNeighbours
+		if(i==0 || i==1 || i==7) {
+			return row-1;
+		}
+		if(i==2 || i==6) {
+			return row;
+		}
+		if(i==3 || i==4 || i==5) {
+			return row+1;
+		}
+		return -1;
+	}
+
+	public static int colNeighbour(int i, int row, int col) { // determine la colonne du pixel voisin de getNeighbours
+		if(i==0 || i==4) {
+			return col;
+		}
+		if(i==1 || i==2 || i==3) {
+			return col+1;
+		}
+		if(i==5 || i==6 || i==7)  {
+			return col-1;
+		}
+		return -1;
+	}
+
+	/**
+	 *
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	public int somme(int a, int b){
+		return 0;
+	}
+
+	/**
+	 *
+	 * @param image
+	 * @param row
+	 * @param col
+	 * @param distance
+	 * @return
+	 */
 	public static boolean[][] connectedPixels(boolean[][] image, int row, int col, int distance) {
-		//TODO implement
-		return null;
-	}
+		boolean[][] connected = new boolean[image.length][image[0].length];
+		connected[row][col] = true;
+
+		// idee 1 :
+		boolean finit = false;
+		while (finit == false) {
+			finit = true;
+			for (int i = 0; i < image.length; i++) {
+				System.out.println("Pix ligne" + i);
+				for (int j = 0; j < image[0].length; ++j) {
+					System.out.println("Pix col" + j);
+					if (image[i][j] == false) {
+						//pixel blanc, go pixel suivant
+						System.out.println("pixel blanc");
+					} else {
+						System.out.println("  ");
+						System.out.println("  ");
+						Main.printArray(connected);
+						System.out.println("  ");
+						if ((i < row - distance || i > row + distance) || (j < col - distance || j > col + distance)) {
+							// trop loin de la minutiae, go suivant
+							System.out.println("pixel out of bounds");
+						} else {
+							if (connected[i][j] == true) {
+								// si pixel noir deja dans tableau connected, go pixel suivant
+								System.out.println("pixel noir deja dans tab");
+							} else {
 
 
-	/**
-	 * Computes the slope of a minutia using linear regression.
-	 *
-	 * @param connectedPixels the result of
-	 *                        {@link #connectedPixels(boolean[][], int, int, int)}.
-	 * @param row             the row of the minutia.
-	 * @param col             the col of the minutia.
-	 * @return the slope.
-	 */
-	public static double computeSlope(boolean[][] connectedPixels, int rowM, int colM) {
+								boolean[] neighbours = getNeighbours(image, i, j);
+								for (int g = 0; g < neighbours.length; ++g) {
+									if (neighbours[g] == true) {
+										int rowPixNoir = rowNeighbour(g, i, j);                // determiner position pixel noir voisin
+										int colPixNoir = colNeighbour(g, i, j);
+										//System.out.println("coordonnees pixel noir connecte" +rowPixNoir+ " " +colPixNoir);
+										if (connected[rowPixNoir][colPixNoir] == true) {        // si le pixel voisin est lie a minutiae good!
+											connected[i][j] = true;
+											System.out.println("add lie dans tab");
+											finit = false;
+											// on a trouve un pixel lie, recommencer processus
+										}
+									}
+								}
+							}
+						}
+					}
 
-		assert (connectedPixels != null);
-
-		// initialisation des variables
-
-		double slope = 0.;
-
-		double somme_x2 = 0;
-		double somme_y2 = 0;
-		double somme_xy = 0;
-
-
-
-		for (int row = 0; row < connectedPixels.length; ++row) {
-			for (int col = 0; col < connectedPixels[row].length; ++col) {
-
-				// x et y exprimés en fonction de l'origine du repère, centré sur la minutie
-				int x = col - colM;
-				int y = rowM - row;
-
-				if (connectedPixels[row][col]) {
-					somme_x2 += x * x;
-					somme_y2 += y * y;
-					somme_xy += x * y;
 				}
 			}
+
 		}
+		return connected;
+	}
 
-		if (somme_x2 == 0) {
-			slope = Double.POSITIVE_INFINITY;
-			return slope;
-		}
+		/**
+		 * Computes the slope of a minutia using linear regression.
+		 *
+		 * @param connectedPixels the result of
+		 *                        {@link #connectedPixels(boolean[][], int, int, int)}.
+		 * @param //row             the row of the minutia.
+		 * @param //col             the col of the minutia.
+		 * @return the slope.
+		 */
+		public static double computeSlope ( boolean[][] connectedPixels, int rowM, int colM){
 
-		else {
+			assert (connectedPixels != null);
 
-			if (somme_x2 >= somme_y2) {
-				slope = somme_xy / somme_x2;
+			// initialisation des variables
+
+			double slope = 0.;
+
+			double somme_x2 = 0;
+			double somme_y2 = 0;
+			double somme_xy = 0;
+
+
+			for (int row = 0; row < connectedPixels.length; ++row) {
+				for (int col = 0; col < connectedPixels[row].length; ++col) {
+
+					// x et y exprimés en fonction de l'origine du repère, centré sur la minutie
+					int x = col - colM;
+					int y = rowM - row;
+
+					if (connectedPixels[row][col]) {
+						somme_x2 += x * x;
+						somme_y2 += y * y;
+						somme_xy += x * y;
+					}
+				}
+			}
+
+			if (somme_x2 == 0) {
+				slope = Double.POSITIVE_INFINITY;
+				return slope;
 			} else {
-				slope = somme_y2 / somme_xy;
+
+				if (somme_x2 >= somme_y2) {
+					slope = somme_xy / somme_x2;
+				} else {
+					slope = somme_y2 / somme_xy;
+				}
+
+				return slope;
 			}
-
-			return slope;
 		}
-	}
 
 
-	/**
-	 * Computes the orientation of a minutia in radians.
-	 *
-	 * @param connectedPixels the result of
-	 *                        {@link #connectedPixels(boolean[][], int, int, int)}.
-	 * @param row             the row of the minutia.
-	 * @param col             the col of the minutia.
-	 * @param slope           the slope as returned by
-	 *                        {@link #computeSlope(boolean[][], int, int)}.
-	 * @return the orientation of the minutia in radians.
-	 */
-	public static double computeAngle(boolean[][] connectedPixels, int rowM, int colM, double slope) {
+		/**
+		 * Computes the orientation of a minutia in radians.
+		 *
+		 * @param connectedPixels the result of
+		 *                        {@link #connectedPixels(boolean[][], int, int, int)}.
+		 * @param //row             the row of the minutia.
+		 * @param //col             the col of the minutia.
+		 * @param slope           the slope as returned by
+		 *                        {@link #computeSlope(boolean[][], int, int)}.
+		 * @return the orientation of the minutia in radians.
+		 */
+		public static double computeAngle ( boolean[][] connectedPixels, int rowM, int colM, double slope){
 
-		// calcul de l'angle formé par le vecteur direction
-		double angle = Math.atan(slope);
+			// calcul de l'angle formé par le vecteur direction
+			double angle = Math.atan(slope);
 
 
-		// variable qui compte le nombre de pixels au dessus et en dessous
-		int pixelUp = 0;
-		int pixelDown = 0;
+			// variable qui compte le nombre de pixels au dessus et en dessous
+			int pixelUp = 0;
+			int pixelDown = 0;
 
-		// boucle qui verifie que les conditions soient respectées
+			// boucle qui verifie que les conditions soient respectées
 
-		for (int row = 0; row < connectedPixels.length; ++row) {
-			for (int col = 0; col < connectedPixels[row].length; ++col) {
+			for (int row = 0; row < connectedPixels.length; ++row) {
+				for (int col = 0; col < connectedPixels[row].length; ++col) {
 
-				// x et y exprimés en fonction de l'origine du repère, centré sur la minutie
-				int x = col - colM;
-				int y = rowM - row;
+					// x et y exprimés en fonction de l'origine du repère, centré sur la minutie
+					int x = col - colM;
+					int y = rowM - row;
 
-				boolean pixelNoir = connectedPixels[row][col];
+					boolean pixelNoir = connectedPixels[row][col];
 
-				if (pixelNoir && (y >= ((-1/slope) * x))) {
-					pixelUp += 1;
-				} else if (pixelNoir && (y < ((-1/slope) * x))) {
-					pixelDown += 1;
+					if (pixelNoir && (y >= ((-1 / slope) * x))) {
+						pixelUp += 1;
+					} else if (pixelNoir && (y < ((-1 / slope) * x))) {
+						pixelDown += 1;
+					}
 				}
 			}
+
+			// conditions qui déterminent l'ajout potentiel de PI à l'angle calculé au début
+			if ((slope == Double.POSITIVE_INFINITY && (pixelUp > pixelDown))) {
+				// on est d'accord, le "au dessus de la minutie" c'est bien de la perpendiculaire ???
+				angle = Math.PI / 2;
+			} else if ((slope == Double.POSITIVE_INFINITY && (pixelUp < pixelDown))) {
+				angle = -Math.PI / 2;
+			} else if ((angle > 0 && (pixelDown > pixelUp)) || (angle < 0 && (pixelDown < pixelUp))) {
+				// vérifier si c'est strictement sup / inf ou pas !!!!! si non = what if == ????
+				angle += Math.PI;
+			}
+
+			return angle;
 		}
 
-		// conditions qui déterminent l'ajout potentiel de PI à l'angle calculé au début
-		if ((slope == Double.POSITIVE_INFINITY && (pixelUp > pixelDown))) {
-			// on est d'accord, le "au dessus de la minutie" c'est bien de la perpendiculaire ???
-			angle  = Math.PI / 2;
+		/**
+		 * Computes the orientation of the minutia that the coordinate <code>(row,
+		 * col)</code>.
+		 *
+		 * @param image    array containing each pixel's boolean value.
+		 * @param row      the first coordinate of the pixel of interest.
+		 * @param col      the second coordinate of the pixel of interest.
+		 * @param distance the distance to be considered in each direction to compute
+		 *                 the orientation.
+		 * @return The orientation in degrees.
+		 */
+		public static int computeOrientation ( boolean[][] image, int row, int col, int distance){
+			//
+			// angle en radian
+			//double angleR = computeAngle(computeSlope(connectedPixels(image, row, col, distance)));
+			//angleR = Math.toDegrees(angleR);
+
+			// angle en dégré (rounded)
+			//int angleD = Math.round(angleD);
+			// initialisé à double mais comment le rendre int ?
+
+			// if (angleD < 0) {
+			//	  angleD += 360;
+			//}
+
+			//return angleD;
+			// comment savoir les coordonnées de la minutie ??
+
+			//
+			return 0;
 		}
 
-		else if ((slope == Double.POSITIVE_INFINITY && (pixelUp < pixelDown))) {
-			angle  =  - Math.PI / 2;
+		/**
+		 * Extracts the minutiae from a thinned image.
+		 *
+		 * @param image array containing each pixel's boolean value.
+		 * @return The list of all minutiae. A minutia is represented by an array where
+		 *         the first element is the row, the second is column, and the third is
+		 *         the angle in degrees.
+		 * @see #thin(boolean[][])
+		 */
+		public static List<int[]> extract ( boolean[][] image){
+			//TODO implement
+			return null;
 		}
 
-		else if ((angle > 0 && (pixelDown > pixelUp)) || (angle < 0 && (pixelDown < pixelUp))) {
-			// vérifier si c'est strictement sup / inf ou pas !!!!! si non = what if == ????
-			angle += Math.PI;
+		/**
+		 *
+		 *
+		 *
+		 *
+		 *
+		 *
+		 *
+		 * Applies the specified rotation to the minutia.
+		 *
+		 * @param minutia   the original minutia.
+		 * @param centerRow the row of the center of rotation.
+		 * @param centerCol the col of the center of rotation.
+		 * @param rotation  the rotation in degrees.
+		 * @return the minutia rotated around the given center.
+		 */
+		public static int[] applyRotation ( int[] minutia, int centerRow, int centerCol, int rotation){
+			//TODO implement
+			return null;
 		}
 
-		return angle;
-	}
+		/**
+		 * Applies the specified translation to the minutia.
+		 *
+		 * @param minutia        the original minutia.
+		 * @param rowTranslation the translation along the rows.
+		 * @param colTranslation the translation along the columns.
+		 * @return the translated minutia.
+		 */
+		public static int[] applyTranslation ( int[] minutia, int rowTranslation, int colTranslation){
+			//TODO implement
+			return null;
+		}
 
-	/**
-	 * Computes the orientation of the minutia that the coordinate <code>(row,
-	 * col)</code>.
-	 *
-	 * @param image    array containing each pixel's boolean value.
-	 * @param row      the first coordinate of the pixel of interest.
-	 * @param col      the second coordinate of the pixel of interest.
-	 * @param distance the distance to be considered in each direction to compute
-	 *                 the orientation.
-	 * @return The orientation in degrees.
-	 */
-	public static int computeOrientation(boolean[][] image, int row, int col, int distance) {
-		//
-		// angle en radian
-		//double angleR = computeAngle(computeSlope(connectedPixels(image, row, col, distance)));
-		//angleR = Math.toDegrees(angleR);
+		/**
+		 * Computes the row, column, and angle after applying a transformation
+		 * (translation and rotation).
+		 *
+		 * @param minutia        the original minutia.
+		 * @param centerCol      the column around which the point is rotated.
+		 * @param centerRow      the row around which the point is rotated.
+		 * @param rowTranslation the vertical translation.
+		 * @param colTranslation the horizontal translation.
+		 * @param rotation       the rotation.
+		 * @return the transformed minutia.
+		 */
+		public static int[] applyTransformation ( int[] minutia, int centerRow, int centerCol, int rowTranslation,
+		int colTranslation, int rotation){
+			//TODO implement
+			return null;
+		}
 
-		// angle en dégré (rounded)
-		//int angleD = Math.round(angleD);
-		// initialisé à double mais comment le rendre int ?
+		/**
+		 * Computes the row, column, and angle after applying a transformation
+		 * (translation and rotation) for each minutia in the given list.
+		 *
+		 * @param minutiae       the list of minutiae.
+		 * @param centerCol      the column around which the point is rotated.
+		 * @param centerRow      the row around which the point is rotated.
+		 * @param rowTranslation the vertical translation.
+		 * @param colTranslation the horizontal translation.
+		 * @param rotation       the rotation.
+		 * @return the list of transformed minutiae.
+		 */
+		public static List<int[]> applyTransformation (List < int[]>minutiae,int centerRow, int centerCol,
+		int rowTranslation,
+		int colTranslation, int rotation){
+			//TODO implement
+			return null;
+		}
+		/**
+		 * Counts the number of overlapping minutiae.
+		 *
+		 * @param minutiae1      the first set of minutiae.
+		 * @param minutiae2      the second set of minutiae.
+		 * @param maxDistance    the maximum distance between two minutiae to consider
+		 *                       them as overlapping.
+		 * @param maxOrientation the maximum difference of orientation between two
+		 *                       minutiae to consider them as overlapping.
+		 * @return the number of overlapping minutiae.
+		 */
+		public static int matchingMinutiaeCount (List < int[]>minutiae1, List < int[]>minutiae2,int maxDistance,
+		int maxOrientation){
+			//TODO implement
+			return 0;
+		}
 
-		// if (angleD < 0) {
-		//	  angleD += 360;
-		//}
+		/**
+		 * Compares the minutiae from two fingerprints.
+		 *
+		 * @param minutiae1 the list of minutiae of the first fingerprint.
+		 * @param minutiae2 the list of minutiae of the second fingerprint.
+		 * @return Returns <code>true</code> if they match and <code>false</code>
+		 *         otherwise.
+		 */
+		public static boolean match (List < int[]>minutiae1, List < int[]>minutiae2){
+			//TODO implement
+			return false;
+		}
 
-		//return angleD;
-		// comment savoir les coordonnées de la minutie ??
-
-		//
-		return 0;
-	}
-
-	/**
-	 * Extracts the minutiae from a thinned image.
-	 *
-	 * @param image array containing each pixel's boolean value.
-	 * @return The list of all minutiae. A minutia is represented by an array where
-	 *         the first element is the row, the second is column, and the third is
-	 *         the angle in degrees.
-	 * @see #thin(boolean[][])
-	 */
-	public static List<int[]> extract(boolean[][] image) {
-		//TODO implement
-		return null;
-	}
-
-	/**
-	 *
-	 *
-	 *
-	 *
-	 *
-	 *
-	 *
-	 * Applies the specified rotation to the minutia.
-	 *
-	 * @param minutia   the original minutia.
-	 * @param centerRow the row of the center of rotation.
-	 * @param centerCol the col of the center of rotation.
-	 * @param rotation  the rotation in degrees.
-	 * @return the minutia rotated around the given center.
-	 */
-	public static int[] applyRotation(int[] minutia, int centerRow, int centerCol, int rotation) {
-		//TODO implement
-		return null;
-	}
-
-	/**
-	 * Applies the specified translation to the minutia.
-	 *
-	 * @param minutia        the original minutia.
-	 * @param rowTranslation the translation along the rows.
-	 * @param colTranslation the translation along the columns.
-	 * @return the translated minutia.
-	 */
-	public static int[] applyTranslation(int[] minutia, int rowTranslation, int colTranslation) {
-		//TODO implement
-		return null;
-	}
-
-	/**
-	 * Computes the row, column, and angle after applying a transformation
-	 * (translation and rotation).
-	 *
-	 * @param minutia        the original minutia.
-	 * @param centerCol      the column around which the point is rotated.
-	 * @param centerRow      the row around which the point is rotated.
-	 * @param rowTranslation the vertical translation.
-	 * @param colTranslation the horizontal translation.
-	 * @param rotation       the rotation.
-	 * @return the transformed minutia.
-	 */
-	public static int[] applyTransformation(int[] minutia, int centerRow, int centerCol, int rowTranslation,
-											int colTranslation, int rotation) {
-		//TODO implement
-		return null;
-	}
-
-	/**
-	 * Computes the row, column, and angle after applying a transformation
-	 * (translation and rotation) for each minutia in the given list.
-	 *
-	 * @param minutiae       the list of minutiae.
-	 * @param centerCol      the column around which the point is rotated.
-	 * @param centerRow      the row around which the point is rotated.
-	 * @param rowTranslation the vertical translation.
-	 * @param colTranslation the horizontal translation.
-	 * @param rotation       the rotation.
-	 * @return the list of transformed minutiae.
-	 */
-	public static List<int[]> applyTransformation(List<int[]> minutiae, int centerRow, int centerCol, int rowTranslation,
-												  int colTranslation, int rotation) {
-		//TODO implement
-		return null;
-	}
-	/**
-	 * Counts the number of overlapping minutiae.
-	 *
-	 * @param minutiae1      the first set of minutiae.
-	 * @param minutiae2      the second set of minutiae.
-	 * @param maxDistance    the maximum distance between two minutiae to consider
-	 *                       them as overlapping.
-	 * @param maxOrientation the maximum difference of orientation between two
-	 *                       minutiae to consider them as overlapping.
-	 * @return the number of overlapping minutiae.
-	 */
-	public static int matchingMinutiaeCount(List<int[]> minutiae1, List<int[]> minutiae2, int maxDistance,
-											int maxOrientation) {
-		//TODO implement
-		return 0;
-	}
-
-	/**
-	 * Compares the minutiae from two fingerprints.
-	 *
-	 * @param minutiae1 the list of minutiae of the first fingerprint.
-	 * @param minutiae2 the list of minutiae of the second fingerprint.
-	 * @return Returns <code>true</code> if they match and <code>false</code>
-	 *         otherwise.
-	 */
-	public static boolean match(List<int[]> minutiae1, List<int[]> minutiae2) {
-		//TODO implement
-		return false;
-	}
 }
