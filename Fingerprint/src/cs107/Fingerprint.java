@@ -122,7 +122,7 @@ public class Fingerprint {
 		int black = 0;
 
 		for (int i = 0; i < neighbours.length; ++i) {
-			if (neighbours[i] == true) {
+			if (neighbours[i]) {
 				++black;
 			}
 		}
@@ -164,7 +164,7 @@ public class Fingerprint {
 				j = 0;
 			}
 
-			if (neighbours[i] == false && neighbours[j] == true) {
+			if (!neighbours[i] && neighbours[j]) {
 				++ numberOfTransitions;
 
 			}
@@ -173,7 +173,6 @@ public class Fingerprint {
 		return numberOfTransitions;
 
 	}
-
 
 
 	/**
@@ -243,12 +242,10 @@ public class Fingerprint {
 				boolean pixelNoir = imageTest[i][j];
 				boolean[] neighbours = getNeighbours(imageTest, i, j);
 
-
 				if (pixelNoir) {
 					System.out.println("case " + i + ", " + j);
 					System.out.println("blackN : " + blackNeighbours(neighbours));
 					System.out.println("nb transitions : " + transitions(getNeighbours(imageTest, i, j))); }
-
 
 				if ((pixelNoir) && (neighbours != null) &&
 						(blackNeighbours(neighbours)) >= 2 && (blackNeighbours(neighbours) <= 6) &&
@@ -264,11 +261,9 @@ public class Fingerprint {
 							System.out.println("deleted !");
 						}
 
-
 						// test step 2
 
 					} else if (step == 1) {
-
 
 						if (((getNeighbours(imageTest, i, j)[0] == false) ||(getNeighbours(imageTest, i, j)[2] == false) || (getNeighbours(imageTest, i, j)[6] == false)) &&
 								((getNeighbours(imageTest, i, j)[0] == false) ||(getNeighbours(imageTest, i, j)[4] == false) || (getNeighbours(imageTest, i, j)[6] == false))) {
@@ -344,19 +339,15 @@ public class Fingerprint {
 	 * @return array containing the boolean value of each pixel of the image after
 	 *         applying the thinning algorithm.
 	 */
- /* public static boolean[][] thin(boolean[][] image) {
-	  //TODO implement
-	  return null;
-  }
 
   /**
    * Computes all pixels that are connected to the pixel at coordinate
    * <code>(row, col)</code> and within the given distance of the pixel.
    *
-   * @param image    array containing each pixel's boolean value.
+   * @param //image    array containing each pixel's boolean value.
    * @param row      the first coordinate of the pixel of interest.
    * @param col      the second coordinate of the pixel of interest.
-   * @param distance the maximum distance at which a pixel is considered.
+   * @param //distance the maximum distance at which a pixel is considered.
    * @return An array where <code>true</code> means that the pixel is within
    *         <code>distance</code> and connected to the pixel at
    *         <code>(row, col)</code>.
@@ -394,9 +385,7 @@ public class Fingerprint {
 	 * @param b
 	 * @return
 	 */
-	public int somme(int a, int b){
-		return 0;
-	}
+
 
 	/**
 	 *
@@ -556,10 +545,11 @@ public class Fingerprint {
 
 			// conditions qui déterminent l'ajout potentiel de PI à l'angle calculé au début
 			if ((slope == Double.POSITIVE_INFINITY && (pixelUp > pixelDown))) {
-				// on est d'accord, le "au dessus de la minutie" c'est bien de la perpendiculaire ???
 				angle = Math.PI / 2;
+
 			} else if ((slope == Double.POSITIVE_INFINITY && (pixelUp < pixelDown))) {
 				angle = -Math.PI / 2;
+
 			} else if ((angle > 0 && (pixelDown > pixelUp)) || (angle < 0 && (pixelDown < pixelUp))) {
 				// vérifier si c'est strictement sup / inf ou pas !!!!! si non = what if == ????
 				angle += Math.PI;
@@ -580,25 +570,23 @@ public class Fingerprint {
 		 * @return The orientation in degrees.
 		 */
 		public static int computeOrientation ( boolean[][] image, int row, int col, int distance){
-			//
-			// angle en radian
-			//double angleR = computeAngle(computeSlope(connectedPixels(image, row, col, distance)));
-			//angleR = Math.toDegrees(angleR);
 
-			// angle en dégré (rounded)
-			//int angleD = Math.round(angleD);
-			// initialisé à double mais comment le rendre int ?
+				// angle en radian
+				double angleR = computeAngle(image, row, col, computeSlope(connectedPixels(image, row, col, distance), row, col));
 
-			// if (angleD < 0) {
-			//	  angleD += 360;
-			//}
+				angleR = Math.toDegrees(angleR);
 
-			//return angleD;
-			// comment savoir les coordonnées de la minutie ??
+				// angle en degré (rounded)
+				int angleD = (int) Math.round(angleR);
 
-			//
-			return 0;
-		}
+
+				if (angleD < 0) {
+					angleD += 360;
+				}
+
+				return angleD;
+			}
+
 
 		/**
 		 * Extracts the minutiae from a thinned image.
@@ -630,9 +618,26 @@ public class Fingerprint {
 		 * @param rotation  the rotation in degrees.
 		 * @return the minutia rotated around the given center.
 		 */
-		public static int[] applyRotation ( int[] minutia, int centerRow, int centerCol, int rotation){
-			//TODO implement
-			return null;
+		public static int[] applyRotation(int[] minutia, int centerRow, int centerCol, int rotation) {
+
+			// calcul des formules nécessaires pour obtenir newRow, newCol et newOrientation
+			int x = minutia[1] - centerCol;
+			int y = centerRow - minutia[0];
+			double newX = x * Math.cos(rotation*(Math.PI/180)) - y * Math.sin(rotation*(Math.PI/180));
+			double newY = x * Math.sin(rotation) - y * Math.sin(rotation);
+			double newRow = centerRow - newY;
+			double newCol = newX + centerCol;
+
+			int Row = (int) Math.round(newRow);
+			int Col = (int) Math.round(newCol);
+
+			double newOrientation = ((minutia[2] + rotation) % 360);
+			// transtypé en int : directement int ou rounded ????
+
+			int[] paramètres = {Row, Col,(int) newOrientation};
+
+			// retourne les coordonnées & l'orientation de la minutie après rotation
+			return paramètres;
 		}
 
 		/**
