@@ -366,6 +366,7 @@ public class Fingerprint {
 		return null;
 	}
 
+
 	/**
 	 * Computes the slope of a minutia using linear regression.
 	 *
