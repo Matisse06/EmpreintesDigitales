@@ -159,16 +159,16 @@ public class Fingerprint {
 		for (int i = 0; i < neighbours.length; ++i) {
 			int j = i + 1;
 
+			if (i == 7) {
+				j = 0;
+			}
+
 			if (!neighbours[i] && neighbours[j]) {
 				++ numberOfTransitions;
+
 			}
 
 		}
-
-		if (neighbours[7] == false && neighbours[0] == true) {
-			++ numberOfTransitions;
-		}
-
 		return numberOfTransitions;
 
 	}
@@ -262,10 +262,7 @@ public class Fingerprint {
 								((getNeighbours(imageTest, i, j)[0] == false) ||(getNeighbours(imageTest, i, j)[4] == false) || (getNeighbours(imageTest, i, j)[6] == false))) {
 							imageTest4[i][j] = false;
 						}
-
-
 					}
-
 				}
 			}
 		}
@@ -576,16 +573,14 @@ public class Fingerprint {
 		 *
 		 */
 		public static List<int[]> extract ( boolean[][] image){
-			List<int[]> listeMinutie = new ArrayList<int[]>();   //creation of list with minutiaes.
+			ArrayList<int[]> listeMinutie = new ArrayList<int[]>();   //creation of list with minutiaes.
+			int[] minutie = new int[3];				// tab with all informations for 1 minutiae
 
-			for(int i = 1; i <image.length-1; ++i){
+			for(int i = 1; i < image.length - 1 ; ++i){
 				for(int j = 1; j < image[0].length - 1 ; ++j) {     	// scan of image, starting at pixel 1 and ending at col-1
-					if(image[i][j]) {
-						// if black pixel (because minutiaes are black)
+					if(image[i][j]) {								// if black pixel (because minutiaes are black)
 						int transi = transitions(getNeighbours(image, i, j));    //calculating transitions
-						if(transi == 1 || transi == 3) {
-							int[] minutie = new int[3];				// tab with all informations for 1 minutiae
-							// if terminaison or bifurcation type of minutiae detected
+						if(transi == 1 || transi == 3) {			// if terminaison or bifurcation type of minutiae detected
 							minutie[0] = i;
 							minutie[1] = j;
 							minutie[2] = computeOrientation(image, i, j, ORIENTATION_DISTANCE);
@@ -596,6 +591,7 @@ public class Fingerprint {
 			}
 			return listeMinutie;	// returns list of minuatiaes( their location + orientation)
 		}
+
 		/**
 		 * Applies the specified rotation to the minutia.
 		 *
