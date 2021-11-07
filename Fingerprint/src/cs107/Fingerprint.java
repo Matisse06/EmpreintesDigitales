@@ -731,8 +731,21 @@ public class Fingerprint {
 		 */
 		public static int matchingMinutiaeCount (List < int[]>minutiae1, List < int[]>minutiae2,int maxDistance,
 		int maxOrientation){
-			//TODO implement
-			return 0;
+			int matchingMinutiaes = 0;
+			for(int i = 0; i < minutiae1.size(); ++i) {
+				for(int j = 0; j < minutiae2.size(); ++j) {
+					double distance = Math.sqrt((minutiae1.get(i)[0] - minutiae2.get(j)[0])*(minutiae1.get(i)[0]-minutiae2.get(j)[0])
+							       + (minutiae2.get(i)[1] - minutiae2.get(j)[1])*(minutiae2.get(i)[1] - minutiae2.get(j)[1]));
+					double orientationDiff = Math.abs(minutiae1.get(i)[2] - minutiae2.get(j)[2]);
+
+					if(distance <= maxDistance && orientationDiff <= maxOrientation) {
+						++matchingMinutiaes;
+					}
+
+				}
+
+			}
+			return matchingMinutiaes;
 		}
 
 		/**
