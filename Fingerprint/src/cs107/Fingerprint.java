@@ -78,7 +78,6 @@ public class Fingerprint {
 		return couleur;
 	}
 
-
 	public static boolean[] getNeighbours(boolean[][] image, int row, int col) {
 		assert (image != null);
 		if ((row < 0 || row >= image.length) || (col < 0 || col >= image[0].length)) {
