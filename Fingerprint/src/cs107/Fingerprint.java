@@ -584,38 +584,33 @@ public class Fingerprint {
 
 
 		/**
-		 * Extracts the minutiae from a thinned image.
+		 * Extracts the minutiae from a thinned image..
 		 *
 		 * @param image array containing each pixel's boolean value.
 		 * @return The list of all minutiae. A minutia is represented by an array where
 		 *         the first element is the row, the second is column, and the third is
 		 *         the angle in degrees.
 		 * @see #thin(boolean[][])
+		 *
 		 */
 		public static List<int[]> extract ( boolean[][] image){
-			ArrayList<int[]> listeMinutie = new ArrayList<int[]>();
-			int[] minutie = new int[3];
+			ArrayList<int[]> listeMinutie = new ArrayList<int[]>();   //creation of list with minutiaes.
+			int[] minutie = new int[3];				// tab with all informations for 1 minutiae
 
 			for(int i = 0; i <image.length; ++i){
-				for(int j = 1; j < image[0].length; ++j) {
-					if(image[i][j]) {
-						int transi = transitions(getNeighbours(image, i, j));
-						if(transi == 1 || transi == 3) {
+				for(int j = 1; j < image[0].length - 1 ; ++j) {     	// scan of image, starting at pixel 1 and ending at col-1
+					if(image[i][j]) {								// if black pixel (because minutiaes are black)
+						int transi = transitions(getNeighbours(image, i, j));    //calculating transitions
+						if(transi == 1 || transi == 3) {			// if terminaison or bifurcation type of minutiae detected
 							minutie[0] = i;
 							minutie[1] = j;
 							minutie[2] = computeOrientation(image, i, j, ORIENTATION_DISTANCE);
 							listeMinutie.add(minutie);
 						}
-
-
 					}
 				}
 			}
-
-
-
-
-			return listeMinutie;
+			return listeMinutie;	// returns list of minuatiaes( their location + orientation)
 		}
 
 		/**
