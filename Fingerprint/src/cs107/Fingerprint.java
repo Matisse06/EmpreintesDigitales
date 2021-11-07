@@ -546,10 +546,10 @@ public class Fingerprint {
 				angle = -Math.PI / 2;
 
 			} else if ((angle > 0 && (pixelDown > pixelUp)) || (angle < 0 && (pixelDown < pixelUp))) {
-				// vérifier si c'est strictement sup / inf ou pas !!!!! si non = what if == ????
 				angle += Math.PI;
 			}
 
+			// retourne l'angle en
 			return angle;
 		}
 
