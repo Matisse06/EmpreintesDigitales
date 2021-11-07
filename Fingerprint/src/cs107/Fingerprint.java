@@ -592,8 +592,29 @@ public class Fingerprint {
 		 * @see #thin(boolean[][])
 		 */
 		public static List<int[]> extract ( boolean[][] image){
-			//TODO implement
-			return null;
+			ArrayList<int[]> listeMinutie = new ArrayList<int[]>();
+			int[] minutie = new int[3];
+
+			for(int i = 0; i <image.length; ++i){
+				for(int j = 1; j < image[0].length; ++j) {
+					if(image[i][j]) {
+						int transi = transitions(getNeighbours(image, i, j));
+						if(transi == 1 || transi == 3) {
+							minutie[0] = i;
+							minutie[1] = j;
+							minutie[2] = computeOrientation(image, i, j, ORIENTATION_DISTANCE);
+							listeMinutie.add(minutie);
+						}
+
+
+					}
+				}
+			}
+
+
+
+
+			return listeMinutie;
 		}
 
 		/**
