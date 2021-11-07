@@ -33,7 +33,7 @@ public class Main {
     //testDrawSkeleton("1_2"); //draw skeleton of fingerprint 1_2.png
     //testDrawSkeleton("2_1"); //draw skeleton of fingerprint 2_1.png
 
-    //testDrawMinutiae("1_1"); //draw minutiae of fingerprint 1_1.png
+    testDrawMinutiae("1_1"); //draw minutiae of fingerprint 1_1.png
     //testDrawMinutiae("1_2"); //draw minutiae of fingerprint 1_2.png
     //testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
 	
@@ -41,7 +41,7 @@ public class Main {
     // Test overall functionality
     //---------------------------
 	//compare 1_1.png with 1_2.png: they are supposed to match
-    testCompareFingerprints("1_1", "1_2", true);  //expected match: true
+    //testCompareFingerprints("1_1", "1_2", true);  //expected match: true
     
     //compare 1_1.png with 2_1.png: they are not supposed to match
     //testCompareFingerprints("1_1", "2_1", false); //expected match: false

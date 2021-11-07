@@ -262,11 +262,7 @@ public class Fingerprint {
 								((getNeighbours(imageTest, i, j)[0] == false) ||(getNeighbours(imageTest, i, j)[4] == false) || (getNeighbours(imageTest, i, j)[6] == false))) {
 							imageTest4[i][j] = false;
 						}
-
-
 					}
-
-					System.out.println();
 				}
 			}
 		}
@@ -497,7 +493,6 @@ public class Fingerprint {
 
 			// calcul de l'angle formé par le vecteur direction
 			double angle = Math.atan(slope);
-			System.out.print(angle);
 
 			// variable qui compte le nombre de pixels au dessus et en dessous
 			int pixelUp = 0;
@@ -581,7 +576,7 @@ public class Fingerprint {
 			ArrayList<int[]> listeMinutie = new ArrayList<int[]>();   //creation of list with minutiaes.
 			int[] minutie = new int[3];				// tab with all informations for 1 minutiae
 
-			for(int i = 0; i <image.length; ++i){
+			for(int i = 1; i < image.length - 1 ; ++i){
 				for(int j = 1; j < image[0].length - 1 ; ++j) {     	// scan of image, starting at pixel 1 and ending at col-1
 					if(image[i][j]) {								// if black pixel (because minutiaes are black)
 						int transi = transitions(getNeighbours(image, i, j));    //calculating transitions
@@ -747,8 +742,8 @@ public class Fingerprint {
 
 			// deux boucles for qui vont prendre chaque élément de m1, auxquels on applique la Transformation
 			// et que l'on va comparer à chaque minutie de m2
-			for (int i = 0; i < minutiae1.size(); ++i) {
-				for (int j = 0; j < minutiae2.size(); ++j) {
+			for (int i = 1; i < minutiae1.size()-1; ++i) {
+				for (int j = 1; j < minutiae2.size()-1; ++j) {
 
 					//déclaration des variables utilisées
 					// minutiae1[i] : row élément 0 et col élément 1
@@ -756,7 +751,7 @@ public class Fingerprint {
 					int centerCol = minutiae2.get(j)[1];
 					int rowTranslation = Math.abs(minutiae2.get(j)[0] - minutiae1.get(i)[0]);
 					int colTranslation = Math.abs(minutiae2.get(j)[1] - minutiae1.get(i)[1]);
-					int rotation = Math.abs(minutiae2.get(j)[3] - minutiae1.get(i)[3]);
+					int rotation = Math.abs(minutiae2.get(j)[2] - minutiae1.get(i)[2]);
 
 					// boucle for qui applique la transformation de chaque minutie de la liste 1
 					for(int g = rotation - MATCH_ANGLE_OFFSET; g <= rotation + MATCH_ANGLE_OFFSET; ++g ) {
