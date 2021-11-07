@@ -252,7 +252,6 @@ public class Fingerprint {
 						if (((getNeighbours(imageTest, i, j)[0] == false) ||(getNeighbours(imageTest, i, j)[2] == false) || (getNeighbours(imageTest, i, j)[4] == false)) &&
 								((getNeighbours(imageTest, i, j)[2] == false) ||(getNeighbours(imageTest, i, j)[4] == false) || (getNeighbours(imageTest, i, j)[6] == false))) {
 							imageTest4[i][j] = false;
-							System.out.println("deleted !");
 						}
 
 						// test step 2
@@ -262,7 +261,6 @@ public class Fingerprint {
 						if (((getNeighbours(imageTest, i, j)[0] == false) ||(getNeighbours(imageTest, i, j)[2] == false) || (getNeighbours(imageTest, i, j)[6] == false)) &&
 								((getNeighbours(imageTest, i, j)[0] == false) ||(getNeighbours(imageTest, i, j)[4] == false) || (getNeighbours(imageTest, i, j)[6] == false))) {
 							imageTest4[i][j] = false;
-							System.out.println("deleted !");
 						}
 
 
