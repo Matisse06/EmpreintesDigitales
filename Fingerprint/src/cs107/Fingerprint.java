@@ -81,7 +81,7 @@ public class Fingerprint {
 
 	public static boolean[] getNeighbours(boolean[][] image, int row, int col) {
 		assert (image != null);
-		if ((row < 0 || row >= image.length) || (col < 0 || col>= image[0].length)) {
+		if ((row < 0 || row >= image.length) || (col < 0 || col >= image[0].length)) {
 			System.out.println("Pixel donne n'est pas dans l'image");
 			return null;
 		}
@@ -241,11 +241,6 @@ public class Fingerprint {
 
 				boolean pixelNoir = imageTest[i][j];
 				boolean[] neighbours = getNeighbours(imageTest, i, j);
-
-				if (pixelNoir) {
-					System.out.println("case " + i + ", " + j);
-					System.out.println("blackN : " + blackNeighbours(neighbours));
-					System.out.println("nb transitions : " + transitions(getNeighbours(imageTest, i, j))); }
 
 				if ((pixelNoir) && (neighbours != null) &&
 						(blackNeighbours(neighbours)) >= 2 && (blackNeighbours(neighbours) <= 6) &&
@@ -518,7 +513,7 @@ public class Fingerprint {
 
 			// calcul de l'angle formé par le vecteur direction
 			double angle = Math.atan(slope);
-
+			System.out.print(angle);
 
 			// variable qui compte le nombre de pixels au dessus et en dessous
 			int pixelUp = 0;

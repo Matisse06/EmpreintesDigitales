@@ -23,10 +23,10 @@ public class Main {
     //testConnectedPixels1();
     //testConnectedPixels2();
     //testConnectedPixels3();
-    //testOrientation();
+    testOrientation();
     //testApplyRotation();
     //testApplyTranslation();
-    testThin();
+    //testThin();
     //testWithSkeleton();
     
     //testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
