@@ -159,16 +159,16 @@ public class Fingerprint {
 		for (int i = 0; i < neighbours.length; ++i) {
 			int j = i + 1;
 
-			if (i == 7) {
-				j = 0;
-			}
-
 			if (!neighbours[i] && neighbours[j]) {
 				++ numberOfTransitions;
-
 			}
 
 		}
+
+		if (neighbours[7] == false && neighbours[0] == true) {
+			++ numberOfTransitions;
+		}
+
 		return numberOfTransitions;
 
 	}
@@ -266,7 +266,6 @@ public class Fingerprint {
 
 					}
 
-					System.out.println();
 				}
 			}
 		}
@@ -497,7 +496,6 @@ public class Fingerprint {
 
 			// calcul de l'angle formé par le vecteur direction
 			double angle = Math.atan(slope);
-			System.out.print(angle);
 
 			// variable qui compte le nombre de pixels au dessus et en dessous
 			int pixelUp = 0;
@@ -578,14 +576,16 @@ public class Fingerprint {
 		 *
 		 */
 		public static List<int[]> extract ( boolean[][] image){
-			ArrayList<int[]> listeMinutie = new ArrayList<int[]>();   //creation of list with minutiaes.
-			int[] minutie = new int[3];				// tab with all informations for 1 minutiae
+			List<int[]> listeMinutie = new ArrayList<int[]>();   //creation of list with minutiaes.
 
-			for(int i = 0; i <image.length; ++i){
+			for(int i = 1; i <image.length-1; ++i){
 				for(int j = 1; j < image[0].length - 1 ; ++j) {     	// scan of image, starting at pixel 1 and ending at col-1
-					if(image[i][j]) {								// if black pixel (because minutiaes are black)
+					if(image[i][j]) {
+						// if black pixel (because minutiaes are black)
 						int transi = transitions(getNeighbours(image, i, j));    //calculating transitions
-						if(transi == 1 || transi == 3) {			// if terminaison or bifurcation type of minutiae detected
+						if(transi == 1 || transi == 3) {
+							int[] minutie = new int[3];				// tab with all informations for 1 minutiae
+							// if terminaison or bifurcation type of minutiae detected
 							minutie[0] = i;
 							minutie[1] = j;
 							minutie[2] = computeOrientation(image, i, j, ORIENTATION_DISTANCE);
@@ -596,7 +596,6 @@ public class Fingerprint {
 			}
 			return listeMinutie;	// returns list of minuatiaes( their location + orientation)
 		}
-
 		/**
 		 * Applies the specified rotation to the minutia.
 		 *
@@ -747,8 +746,8 @@ public class Fingerprint {
 
 			// deux boucles for qui vont prendre chaque élément de m1, auxquels on applique la Transformation
 			// et que l'on va comparer à chaque minutie de m2
-			for (int i = 0; i < minutiae1.size(); ++i) {
-				for (int j = 0; j < minutiae2.size(); ++j) {
+			for (int i = 1; i < minutiae1.size()-1; ++i) {
+				for (int j = 1; j < minutiae2.size()-1; ++j) {
 
 					//déclaration des variables utilisées
 					// minutiae1[i] : row élément 0 et col élément 1
@@ -756,7 +755,7 @@ public class Fingerprint {
 					int centerCol = minutiae2.get(j)[1];
 					int rowTranslation = Math.abs(minutiae2.get(j)[0] - minutiae1.get(i)[0]);
 					int colTranslation = Math.abs(minutiae2.get(j)[1] - minutiae1.get(i)[1]);
-					int rotation = Math.abs(minutiae2.get(j)[3] - minutiae1.get(i)[3]);
+					int rotation = Math.abs(minutiae2.get(j)[2] - minutiae1.get(i)[2]);
 
 					// boucle for qui applique la transformation de chaque minutie de la liste 1
 					for(int g = rotation - MATCH_ANGLE_OFFSET; g <= rotation + MATCH_ANGLE_OFFSET; ++g ) {
