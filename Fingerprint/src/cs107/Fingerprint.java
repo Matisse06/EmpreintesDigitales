@@ -159,16 +159,15 @@ public class Fingerprint {
 		for (int i = 0; i < neighbours.length; ++i) {
 			int j = i + 1;
 
-			if (i == 7) {
-				j = 0;
-			}
-
 			if (!neighbours[i] && neighbours[j]) {
 				++ numberOfTransitions;
-
 			}
-
 		}
+
+		if (neighbours[7] == false && neighbours[0] == true) {
+			++ numberOfTransitions;
+		}
+
 		return numberOfTransitions;
 
 	}
