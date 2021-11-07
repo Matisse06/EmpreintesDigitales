@@ -613,13 +613,6 @@ public class Fingerprint {
 		}
 
 		/**
-		 *
-		 *
-		 *
-		 *
-		 *
-		 *
-		 *
 		 * Applies the specified rotation to the minutia.
 		 *
 		 * @param minutia   the original minutia.
@@ -731,13 +724,18 @@ public class Fingerprint {
 		 */
 		public static int matchingMinutiaeCount (List < int[]>minutiae1, List < int[]>minutiae2,int maxDistance,
 		int maxOrientation){
+
+			// initialisation du nombre de match
 			int matchingMinutiaes = 0;
+
+			// deux boucles for qui vont comparer la distance et l'orientation entre les 2 minuties
 			for(int i = 0; i < minutiae1.size(); ++i) {
 				for(int j = 0; j < minutiae2.size(); ++j) {
 					double distance = Math.sqrt((minutiae1.get(i)[0] - minutiae2.get(j)[0])*(minutiae1.get(i)[0]-minutiae2.get(j)[0])
 							       + (minutiae2.get(i)[1] - minutiae2.get(j)[1])*(minutiae2.get(i)[1] - minutiae2.get(j)[1]));
 					double orientationDiff = Math.abs(minutiae1.get(i)[2] - minutiae2.get(j)[2]);
 
+					// si les condiitons sont respectées, alors les deux minuties match (+1)
 					if(distance <= maxDistance && orientationDiff <= maxOrientation) {
 						++matchingMinutiaes;
 					}
@@ -757,7 +755,42 @@ public class Fingerprint {
 		 *         otherwise.
 		 */
 		public static boolean match (List < int[]>minutiae1, List < int[]>minutiae2){
-			//TODO implement
+
+			// initialisation des variables de base
+			int maxDistance = DISTANCE_THRESHOLD;
+			int maxOrientation = ORIENTATION_DISTANCE;
+
+			// deux boucles for qui vont prendre chaque élément de m1, auxquels on applique la Transformation
+			// et que l'on va comparer à chaque minutie de m2
+			for (int i = 0; i < minutiae1.size(); ++i) {
+				for (int j = 0; j < minutiae2.size(); ++j) {
+
+					//déclaration des variables utilisées
+					// minutiae1[i] : row élément 0 et col élément 1
+					int centerRow = minutiae2.get(j)[0];
+					int centerCol = minutiae2.get(j)[1];
+					int rowTranslation = Math.abs(minutiae2.get(j)[0] - minutiae1.get(i)[0]);
+					int colTranslation = Math.abs(minutiae2.get(j)[1] - minutiae1.get(i)[1]);
+					int rotation = Math.abs(minutiae2.get(j)[3] - minutiae1.get(i)[3]);
+
+					// boucle for qui applique la transformation de chaque minutie de la liste 1
+					for(int g = rotation - MATCH_ANGLE_OFFSET; g <= rotation + MATCH_ANGLE_OFFSET; ++g ) {
+						int matches = matchingMinutiaeCount(applyTransformation(minutiae1, centerRow, centerCol, rowTranslation, colTranslation, g),
+											minutiae2, maxDistance, maxOrientation);
+						boolean same = (matches >= FOUND_THRESHOLD);
+
+						if(same) {
+							return true;
+						}
+					}
+				}
+			}
+
+			// 2 boucles for qui testent chaque minutie
+			// on fait apply transformation pour chaque minutie de la liste 1, vers chaque minutie de la liste 2
+			// on compte le nombre de matching des autres minuties dans chaque cas
+			// if nombre trouvé avec matching == distance_thresold, alors true
+
 			return false;
 		}
 
