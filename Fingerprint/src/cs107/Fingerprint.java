@@ -398,36 +398,23 @@ public class Fingerprint {
 		while (finit == false) {
 			finit = true;
 			for (int i = 0; i < image.length; i++) {
-				System.out.println("Pix ligne" + i);
 				for (int j = 0; j < image[0].length; ++j) {
-					System.out.println("Pix col" + j);
 					if (image[i][j] == false) {
 						//pixel blanc, go pixel suivant
-						System.out.println("pixel blanc");
 					} else {
-						System.out.println("  ");
-						System.out.println("  ");
-						Main.printArray(connected);
-						System.out.println("  ");
 						if ((i < row - distance || i > row + distance) || (j < col - distance || j > col + distance)) {
 							// trop loin de la minutiae, go suivant
-							System.out.println("pixel out of bounds");
 						} else {
 							if (connected[i][j] == true) {
 								// si pixel noir deja dans tableau connected, go pixel suivant
-								System.out.println("pixel noir deja dans tab");
 							} else {
-
-
 								boolean[] neighbours = getNeighbours(image, i, j);
 								for (int g = 0; g < neighbours.length; ++g) {
 									if (neighbours[g] == true) {
 										int rowPixNoir = rowNeighbour(g, i, j);                // determiner position pixel noir voisin
 										int colPixNoir = colNeighbour(g, i, j);
-										//System.out.println("coordonnees pixel noir connecte" +rowPixNoir+ " " +colPixNoir);
 										if (connected[rowPixNoir][colPixNoir] == true) {        // si le pixel voisin est lie a minutiae good!
 											connected[i][j] = true;
-											System.out.println("add lie dans tab");
 											finit = false;
 											// on a trouve un pixel lie, recommencer processus
 										}
