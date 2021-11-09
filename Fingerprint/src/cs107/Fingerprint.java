@@ -461,19 +461,18 @@ public class Fingerprint {
 				}
 			}
 
+			if (somme_x2 >= somme_y2) {
+				slope = somme_xy / somme_x2;
+			} else {
+				slope = somme_y2 / somme_xy;
+			}
+		
 			if (somme_x2 == 0) {
 				slope = Double.POSITIVE_INFINITY;
 				return slope;
-			} else {
-
-				if (somme_x2 >= somme_y2) {
-					slope = somme_xy / somme_x2;
-				} else {
-					slope = somme_y2 / somme_xy;
-				}
-
-				return slope;
-			}
+			} 
+			
+			return slope;
 		}
 
 
@@ -488,17 +487,20 @@ public class Fingerprint {
 		 *                        {@link #computeSlope(boolean[][], int, int)}.
 		 * @return the orientation of the minutia in radians.
 		 */
+		
+		
 		public static double computeAngle ( boolean[][] connectedPixels, int rowM, int colM, double slope){
+			
 
-			// calcul de l'angle formé par le vecteur direction
+			// calcul de l'angle (rad) formé par le vecteur direction
 			double angle = Math.atan(slope);
 
-			// variable qui compte le nombre de pixels au dessus et en dessous
+			// variables qui comptent le nombre de pixels au dessus et en dessous
 			int pixelUp = 0;
 			int pixelDown = 0;
 
-			// boucle qui verifie que les conditions soient respectées
-
+			// boucle qui vérifie que les conditions soient respectées
+			
 			for (int row = 0; row < connectedPixels.length; ++row) {
 				for (int col = 0; col < connectedPixels[row].length; ++col) {
 
@@ -508,14 +510,15 @@ public class Fingerprint {
 
 					boolean pixelNoir = connectedPixels[row][col];
 
-					if (pixelNoir && (y >= ((-1 / slope) * x))) {
+					if (pixelNoir && y >= ((-1 / slope) * x)) {
 						pixelUp += 1;
-					} else if (pixelNoir && (y < ((-1 / slope) * x))) {
+					} else if (pixelNoir) {
 						pixelDown += 1;
 					}
 				}
 			}
-
+		
+		
 			// conditions qui déterminent l'ajout potentiel de PI à l'angle calculé au début
 			if ((slope == Double.POSITIVE_INFINITY && (pixelUp > pixelDown))) {
 				angle = Math.PI / 2;
@@ -523,11 +526,16 @@ public class Fingerprint {
 			} else if ((slope == Double.POSITIVE_INFINITY && (pixelUp < pixelDown))) {
 				angle = -Math.PI / 2;
 
-			} else if ((angle > 0 && (pixelDown > pixelUp)) || (angle < 0 && (pixelDown < pixelUp))) {
+			} else if ((angle > 0 && (pixelDown > pixelUp)) || (angle < 0 && (pixelDown <= pixelUp))) {
 				angle += Math.PI;
+				System.out.println(angle  + " " + pixelUp + " " + pixelDown);
 			}
+			
+			
 
-			// retourne l'angle en
+			// retourne l'angle en radian
+
+			
 			return angle;
 		}
 
@@ -545,18 +553,20 @@ public class Fingerprint {
 		public static int computeOrientation ( boolean[][] image, int row, int col, int distance){
 
 				// angle en radian
-				double angleR = computeAngle(image, row, col, computeSlope(connectedPixels(image, row, col, distance), row, col));
+				boolean[][] neighbours = connectedPixels(image, row, col, ORIENTATION_DISTANCE);
+				double slope = computeSlope(neighbours, row, col);
+				double angleR = computeAngle(neighbours, row, col, slope);
 
+				// conversion de l'angle en degré
 				angleR = Math.toDegrees(angleR);
 
 				// angle en degré (rounded)
 				int angleD = (int) Math.round(angleR);
 
-
 				if (angleD < 0) {
 					angleD += 360;
 				}
-
+				
 				return angleD;
 			}
 
@@ -571,7 +581,7 @@ public class Fingerprint {
 		 * @see #thin(boolean[][])
 		 *
 		 */
-		public static List<int[]> extract ( boolean[][] image){
+		public static List<int[]> extract(boolean[][] image){
 			ArrayList<int[]> listeMinutie = new ArrayList<int[]>();   //creation of list with minutiaes.
 
 			for(int i = 1 ; i < image.length - 1 ; ++i){
