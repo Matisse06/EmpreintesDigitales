@@ -717,11 +717,13 @@ public class Fingerprint {
 			// initialisation du nombre de match
 			int matchingMinutiaes = 0;
 
+
+
 			// deux boucles for qui vont comparer la distance et l'orientation entre les 2 minuties
 			for(int i = 0; i < minutiae1.size(); ++i) {
 				for(int j = 0; j < minutiae2.size(); ++j) {
 					double distance = Math.sqrt((minutiae1.get(i)[0] - minutiae2.get(j)[0])*(minutiae1.get(i)[0]-minutiae2.get(j)[0])
-							       + (minutiae2.get(i)[1] - minutiae2.get(j)[1])*(minutiae2.get(i)[1] - minutiae2.get(j)[1]));
+							       + (minutiae1.get(i)[1] - minutiae2.get(j)[1])*(minutiae1.get(i)[1] - minutiae2.get(j)[1]));
 					double orientationDiff = Math.abs(minutiae1.get(i)[2] - minutiae2.get(j)[2]);
 
 					// si les condiitons sont respectées, alors les deux minuties match (+1)

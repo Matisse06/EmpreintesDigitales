@@ -27,7 +27,7 @@ public class Main {
     //testApplyRotation();
     //testApplyTranslation();
     //testThin();
-    testWithSkeleton();
+    //testWithSkeleton();
     
     //testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
     //testDrawSkeleton("1_2"); //draw skeleton of fingerprint 1_2.png
@@ -47,7 +47,7 @@ public class Main {
     //testCompareFingerprints("1_1", "2_1", false); //expected match: false
 
     //compare 1_1 with all other images of the same finger
-    //testCompareAllFingerprints("1_1", 1, true);
+    testCompareAllFingerprints("1_1", 1, true);
 
     //compare 1_1 with all images of finger 2
     //testCompareAllFingerprints("1_1", 2, false);
