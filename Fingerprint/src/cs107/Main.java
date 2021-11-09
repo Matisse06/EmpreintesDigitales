@@ -41,13 +41,13 @@ public class Main {
     // Test overall functionality
     //---------------------------
 	//compare 1_1.png with 1_2.png: they are supposed to match
-    //testCompareFingerprints("1_1", "1_2", true);  //expected match: true
+    testCompareFingerprints("1_1", "1_2", true);  //expected match: true
     
     //compare 1_1.png with 2_1.png: they are not supposed to match
     //testCompareFingerprints("1_1", "2_1", false); //expected match: false
 
     //compare 1_1 with all other images of the same finger
-    testCompareAllFingerprints("1_1", 1, true);
+    //testCompareAllFingerprints("1_1", 1, true);
 
     //compare 1_1 with all images of finger 2
     //testCompareAllFingerprints("1_1", 2, false);

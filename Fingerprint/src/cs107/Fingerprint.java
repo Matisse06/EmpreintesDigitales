@@ -528,7 +528,6 @@ public class Fingerprint {
 
 			} else if ((angle > 0 && (pixelDown > pixelUp)) || (angle < 0 && (pixelDown <= pixelUp))) {
 				angle += Math.PI;
-				System.out.println(angle  + " " + pixelUp + " " + pixelDown);
 			}
 			
 			
@@ -753,8 +752,8 @@ public class Fingerprint {
 
 			// deux boucles for qui vont prendre chaque élément de m1, auxquels on applique la Transformation
 			// et que l'on va comparer à chaque minutie de m2
-			for (int i = 1; i < minutiae1.size()-1; ++i) {
-				for (int j = 1; j < minutiae2.size()-1; ++j) {
+			for (int i = 0; i < minutiae1.size(); ++i) {
+				for (int j = 0; j < minutiae2.size(); ++j) {
 
 					//déclaration des variables utilisées
 					// minutiae1[i] : row élément 0 et col élément 1
@@ -762,7 +761,7 @@ public class Fingerprint {
 					int centerCol = minutiae2.get(j)[1];
 					int rowTranslation = Math.abs(minutiae2.get(j)[0] - minutiae1.get(i)[0]);
 					int colTranslation = Math.abs(minutiae2.get(j)[1] - minutiae1.get(i)[1]);
-					int rotation = Math.abs(minutiae2.get(j)[2] - minutiae1.get(i)[2]);
+					int rotation = minutiae2.get(j)[2] - minutiae1.get(i)[2];
 
 					// boucle for qui applique la transformation de chaque minutie de la liste 1
 					for(int g = rotation - MATCH_ANGLE_OFFSET; g <= rotation + MATCH_ANGLE_OFFSET; ++g ) {
