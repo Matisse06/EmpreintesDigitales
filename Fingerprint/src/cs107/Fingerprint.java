@@ -728,6 +728,7 @@ public class Fingerprint {
 					// si les condiitons sont respectées, alors les deux minuties match (+1)
 					if(distance <= maxDistance && orientationDiff <= maxOrientation) {
 						++matchingMinutiaes;
+						break;
 					}
 
 				}
