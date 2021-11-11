@@ -625,7 +625,10 @@ public class Fingerprint {
 			double newOrientation = ((minutia[2] + rotation) % 360);
 			// transtypé en int : directement int ou rounded ????
 
+
+
 			int[] paramètres = {Row, Col,(int) newOrientation};
+
 
 			// retourne les coordonnées & l'orientation de la minutie après rotation
 			return paramètres;
@@ -645,9 +648,9 @@ public class Fingerprint {
 			int newCol = minutia[1] - colTranslation;
 			int newOrientation = minutia[2];
 
-			int[] paramètres = {newRow, newCol, newOrientation};
+			int[] paramètres1 = {newRow, newCol, newOrientation};
 
-			return paramètres;
+			return paramètres1;
 		}
 
 		/**
@@ -692,8 +695,9 @@ public class Fingerprint {
 			//applique la transformation à une liste entière
 			ArrayList <int[]> ListeMinutia = new ArrayList<int[]>();
 
-			for(int[] i : minutiae) {
-				ListeMinutia.add(applyTransformation(i, centerRow, centerCol, rowTranslation,
+			//for(int[] i : minutiae) {
+			for(int i = 0; i < minutiae.size(); ++i ) {
+				ListeMinutia.add(applyTransformation(minutiae.get(i), centerRow, centerCol, rowTranslation,
 				colTranslation, rotation));
 			}
 
@@ -717,6 +721,7 @@ public class Fingerprint {
 			int matchingMinutiaes = 0;
 
 
+			boolean[] matched = new boolean[minutiae2.size()];
 
 			// deux boucles for qui vont comparer la distance et l'orientation entre les 2 minuties
 			for(int i = 0; i < minutiae1.size(); ++i) {
@@ -724,10 +729,11 @@ public class Fingerprint {
 					double distance = Math.sqrt((minutiae1.get(i)[0] - minutiae2.get(j)[0])*(minutiae1.get(i)[0]-minutiae2.get(j)[0])
 							       + (minutiae1.get(i)[1] - minutiae2.get(j)[1])*(minutiae1.get(i)[1] - minutiae2.get(j)[1]));
 					double orientationDiff = Math.abs(minutiae1.get(i)[2] - minutiae2.get(j)[2]);
-
+					// fqire un tqbleau a
 					// si les condiitons sont respectées, alors les deux minuties match (+1)
-					if(distance <= maxDistance && orientationDiff <= maxOrientation) {
+					if(distance <= maxDistance && orientationDiff <= maxOrientation && !matched[j]) {
 						++matchingMinutiaes;
+						matched[j] = true;
 						break;
 					}
 
@@ -749,7 +755,7 @@ public class Fingerprint {
 
 			// initialisation des variables de base
 			int maxDistance = DISTANCE_THRESHOLD;
-			int maxOrientation = ORIENTATION_DISTANCE;
+			int maxOrientation = ORIENTATION_THRESHOLD;
 
 			// deux boucles for qui vont prendre chaque élément de m1, auxquels on applique la Transformation
 			// et que l'on va comparer à chaque minutie de m2
@@ -764,17 +770,27 @@ public class Fingerprint {
 					int colTranslation = minutiae2.get(i)[1] - minutiae1.get(j)[1];
 					int rotation = minutiae2.get(i)[2] - minutiae1.get(j)[2];
 
+
+
 					// boucle for qui applique la transformation de chaque minutie de la liste 1
 					for(int g = rotation - MATCH_ANGLE_OFFSET; g <= rotation + MATCH_ANGLE_OFFSET; ++g ) {
 						int matches = matchingMinutiaeCount(applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, g),
 											minutiae1, maxDistance, maxOrientation);
 						boolean same = (matches >= FOUND_THRESHOLD);
+						int faux = 0;
+						if (matches > faux ) {
+							faux = matches;
+						}
+						if (!same && faux > 16) {
+							System.out.println("Match count "+faux+"  ");
+						}
 
 						if(same) {
 							System.out.print("Match count "+matches+" ");
 							return true;
 						}
 					}
+
 				}
 			}
 
@@ -782,7 +798,6 @@ public class Fingerprint {
 			// on fait apply transformation pour chaque minutie de la liste 1, vers chaque minutie de la liste 2
 			// on compte le nombre de matching des autres minuties dans chaque cas
 			// if nombre trouvé avec matching == distance_thresold, alors true
-
 			return false;
 		}
 
