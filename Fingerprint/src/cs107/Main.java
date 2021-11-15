@@ -55,7 +55,7 @@ public class Main {
 
     //compare 1_1 with all images of finger 3 to 16
     for (int f = 1; f <= 16; f++) {
-    testCompareAllFingerprints("1_2", f, false);
+    testCompareAllFingerprints("1_5", f, false);
     }
   }
 

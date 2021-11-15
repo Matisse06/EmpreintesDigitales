@@ -726,7 +726,9 @@ public class Fingerprint {
 
                     boolean same = (matches >= FOUND_THRESHOLD);
                     if (same) {
+                        System.out.println(matches);
                         return true;
+
                     }
                 }
 
